@@ -1,0 +1,97 @@
+<HTML>
+<HEAD>
+   <meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+</HEAD>
+<BODY>
+
+<A HREF="$RETURN">BACK</A>
+
+<H2><font color="#8B0000">JPWS CSV EXTERNAL FILE FORMAT</font></H2>
+
+
+<H3><font color="#005FBF">CSV Format</font></H3>
+
+The base of JPasswords CSV serialization is <a href="http://www.faqs.org/rfcs/rfc4180.html">RFC-4180</a>.  The format type "<small><b>DATABASE</b></small>" conforms rather purely to this definition, while format type "<small><b>SPREADSHEET</b></small>" has a variant field delimiter, namely semicolon.
+
+<H3><font color="#005FBF">Comment Lines</font></H3>
+
+Deviant to RFC-4180, any number of comment lines is tolerated <u>before the header line</u> of a file. A comment line is marked by starting with character <b>"#"</b>. In a <i>JPasswords</i> export file the comment lines inform about the format parameters used to create the file.
+
+<H3><font color="#005FBF">CSV Header Fields</font></H3>
+
+Note that JPWS CSV file format <u>requires a line with header fields as the first text line</u> after comments. If you see CSV as a set of columns, the header fields define the column names. Using column names allows variability of column composition to serve as input for <i>JPasswords</i> or possibly other reading applications. In most cases you don't have to care about the ordering or selection of columns in an input file! You can use a subset of possible column names or supply additional unknown names, it all does not bother the read function.
+
+<P>The following columns are <u>mandatory</u>:
+
+<table cellpadding="6">
+<tr><td><b><font color="red">TITLE</font></b></td>
+<td><i>Text</i>. Entry title (such as a name for the account, purpose, etc.)</td>
+</tr>
+<tr><td><b><font color="red">PASSWORD</font></b></td>
+<td><i>Text</i>. Your login password</td>
+</tr></table>
+
+<P>The following columns are optional data fields. Values in all columns may be left empty.
+
+<table cellpadding="6">
+<tr><td><b>USER</b></td>
+<td><i>Text</i>. Your login username</td>
+</tr>
+<tr><td><b>GROUP</b></td>
+<td><i>Text</i>. A group identifier assigning this entry to a group of entries. The group name may be multi-level, each level separated by a "." character (e.g. "Forums.Games.ImmortalCities")</td>
+</tr>
+<tr><td><b>EMAIL</b></td>
+<td><i>Text</i>. Email address (unspecific usage). </td>
+</tr>
+<tr><td><b>NOTES</b></td>
+<td><i>Text</i>. Free comment text about this entry</td>
+</tr>
+<tr><td><b>URL</b></td>
+<td><i>Text</i>. URL denomination, e.g. to address a homepage or other Internet location. </td>
+</tr>
+<tr><td><b>PWHISTORY</b></td>
+<td><i>Text</i>. Password history in a special format which is a list of lists, encoded in RFC-4180 convention. The elements of the history list are pairs (a,b) consisting of a&nbsp;=&nbsp;XML-time notation (UT) of the password creation time, and b&nbsp;=&nbsp;the historical password value. </td>
+</tr>
+<tr><td><b>UUID</b></td>
+<td><i>Text</i>. Hexadecimal notation of a 16-byte integer. This value represents a technical, universal identifier for this entry.</td>
+</tr>
+<tr><td><b>INTERVAL</b></td>
+<td><i>Integer (0..3650)</i>. Number of days for a password validity period.</td>
+</tr>
+<tr><td><b>POLICY</b></td>
+<td><i>Text</i>. Technical serialization of an entry owned automated password generation policy. (For details consult the PWS V3 database format document.)</td>
+</tr>
+<tr><td><b>SHORTKEY</b></td>
+<td><i>Text</i>. Java serialization of a keyboard key-stroke. Example: "ctrl pressed G" for key CTRL-G</td>
+</tr>
+<tr><td><b>T_CREATED</b></td>
+<td><i>Time</i>. The timepoint when this entry was created.</td>
+</tr>
+<tr><td><b>T_MODIFIED</b></td>
+<td><i>Time</i>. The timepoint when this entry was last modified.</td>
+</tr>
+<tr><td><b>T_PASSEXPIRY</b></td>
+<td><i>Time</i>. The timepoint when the password will expire.</td>
+</tr>
+<tr><td><b>T_PASSMODIFIED</b></td>
+<td><i>Time</i>. The timepoint when the password was last modified.</td>
+</tr>
+<tr><td><b>T_PASSACCESS</b></td>
+<td><i>Time</i>. The timepoint when the password was last accessed.</td>
+</tr>
+
+</table>
+
+<H3><font color="#005FBF">Data Types</font></H3>
+
+<i>Text</i> - is any sequence of characters of your chosen character set. If the text contains a separator sign, a double-quote or a linefeed, the whole field value is to be included in double-quotes.
+
+<p><i>Time</i> - allows various notations of a timepoint, all of them referring to Universal Time (GMT). There are three subtypes available: a) a long integer (digits) representing the number of seconds since 1st Jan 1970 0:00 UT, b) XML standard time-format, and c) any standard notation that can be understood by your Java Virtual Machine.
+
+<H3><font color="#005FBF">Record Data</font></H3>
+
+Password entry records immediately follow the header line. Number and sequence of fields per record must be identical to the pattern which was given by the header line. Records are separated by CRLF (line feed). Carefully note, however, that the occurrence of CRLF in the file's text does not necessarily mark the end of a record!
+
+
+
+</BODY></HTML>

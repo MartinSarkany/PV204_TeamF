@@ -1,0 +1,66 @@
+<HTML>
+<HEAD>
+   <meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+</HEAD>
+<BODY>
+
+<H2><font color="#8B0000">CSV IMPORT HILFE</font></H2>
+
+<H3><font color="#005FBF">Allgemein</font></H3>
+
+CSV Import liest Passwort-Einträge von einer formatierten Textdatei und versucht, diese in eine offene Datenbank zu integrieren oder eine neue Datenbank zu erzeugen, je nachdem, welches Kommando Sie gegeben haben. Eingabedateien können einem von zwei möglichen Dateiformaten entsprechen, nämlich <b>"DATENBANK"</b> oder <b>"TABELLEN-KALKULATION"</b>. Unabhängig davon kann ein Zeichensatz gewählt werden, der zur Kodierung der Eingabedatei paßt.
+
+<p>Siehe auch <a href="help.csvformat">JPWS CSV-Dateiformat</a>.
+
+
+<H3><font color="#005FBF">Kontrollelemente</font></H3>
+
+<table cellpadding="6">
+
+<tr><td valign="top"><b><font color="red">Zieldatei</font></b></td>
+<td>Datenbank im Arbeitsbereich.
+<P>Zeigt die Datenbank an, die den Import erhalten soll. 
+</td></tr>
+
+<tr><td valign="top"><b><font color="red">Bestimmung</font></b></td>
+<td>Werte: <b><small>ZUSAMMENFÜHREN</small></b> or <b><small>NEUE DATEI</small></b>. Modus der Zielerzeugung.
+<P>Zeigt an, ob der Import in eine neue Datei geht oder mit der gewählten bestehenden zusammengeführt werden soll.
+</td></tr>
+
+<tr><td valign="top"><b><font color="red">Zielgruppe</font></b></td>
+<td>Optionen: Neue oder existierende Gruppe in der Datenbank.
+<P>Sie können ein bestimmtes Verzeichnis (Gruppenname) innerhalb der Datenbank angeben, das alle importierten Einträge aufnimmt. Der hier eingetragene Wert dient als Präfix zu den Gruppennamen der importierten Datensätze. Wählen Sie "Wurzelverzeichnis", wenn Sie kein Präfix benötigen. (Hinweis: Ein besonderer Gruppenname verhindert keine Datensatz-Konflikte!)
+</td></tr>
+
+<tr><td valign="top"><b><font color="red">Textformat</font></b></td>
+<td>Optionen: <small><b>DATENBANK</b></small> und <small><b>TABELLEN-KALKULATION</b></small>. 
+<P>Für Dateien des Tpys "<U><B><small>DATENBANK<small></B></U>" erwartet <I>JPasswords</I> Eingabedaten, die <b>RFC-4180</b> erfüllen. (Dies ist die Grundlage des bei IANA registrierten <B>MIME-Typs "text/csv"</B>.) Dieses Format erlaubt die höchste Genauigkeit bei der Darstellung des Inhalts. 
+
+<P><I>JPasswords</I> implementiert daneben eine Formatvariante (mit Strichpunkt als Feld-Trennzeichen) mit dem Typ "<U><B><small>TABELLEN-KALKULATION</small></B></U>". Diese Option kann sinnvoll sein, wenn Ihre Eingabe aus einer Tabellenkalkulation oder einer entsprechenden Ausgabe stammt. Dabei ist es jedoch im allgemeinen nicht möglich, Zeilenumbrüche als Elemente von Feldinhalten zu transportieren (z.B. bei mehrzeiligen Textfeldern).
+</td></tr>
+
+<tr><td valign="top"><b><font color="red">Zeichensatz</font></b></td>
+<td>Optionen: Liste der verfügbaren Zeichensätze aus Ihrer Java Virtuellen Maschine. 
+<P>Wählen Sie einen Standard, der am besten zu der Kodierung paßt, mit der Ihre Eingabedatei erzeugt wurde. "<U><B>UTF-8</B></U>" ist generell eine gute Wahl für alle Sprachen und Umgebungen. Benutzer aus der Westlichen Hemisphere könnten alternativ auch  "<U><B>ISO-8859-1</B></U>" oder "<U><B>windows-1252</B></U>" wählen. 
+</td></tr>
+
+
+<tr><td valign="top"><b><font color="red">Eingabedatei</font></b></td>
+<td>Benutzen Sie den Dateibrowser um die CSV-Eingabedatei zu wählen.
+</td></tr>
+</table>
+
+<H3><font color="#005FBF">Verträglichkeiten</font></H3>
+
+<i>JPasswords</i> kann <b><i>KeePass</i></b> CSV-Exportdateien einlesen. Die richtigen Einstellungen für diesen Zweck sind: DATENBANK, UTF-8. 
+
+<H3><font color="#005FBF">Über CSV</font></H3>
+
+CSV wird oft als (Englisch) "comma separated values" gelesen und ist ein weit verbreitetes Textformat, um den Inhalt von Datenbanken zu transportieren oder sogar operational darzustellen. Trotz seiner Beliebtheit gibt es keine verbindliche Vorschrift für dieses Format oder die darin verwendeten Datentypen. Als Folge davon kann es zu Problemen kommen, wenn versucht wird, CSV-Dateien aus anderen Anwendungen einzulesen. 
+
+<H3><font color="#005FBF">Sicherheit-Bedenken</font></H3>
+
+CSV-Dateien machen Ihre Passwörter im Klartext sichtbar und sind deshalb dem eigentlichen Ziel von <i>JPasswords</i>, Ihre Passwörter zu schützen, entgegengesetzt. Versuchen Sie soweit möglich, die Herstellung von Kopien solcher Dateien zu vermeiden. Selbst wenn eine Datei im Dateimanager "gelöscht" ist, sind ihre Daten weiterhin zugänglich und stellen ein Sicherheitsrisiko dar. Löschen Sie deshalb CSV-Dateien und alle ihre Kopien sobald möglich mit dem Tool "<B>Sicheres Dateilöschen</B>", das im <i>JPasswords</i> Hilfe-Menü angeboten wird. Bei modernen SSD-Drives ist dies jedoch nutzlos und es bleibt Ihnen nur die Änderung Ihrer Passwörter!
+
+
+</BODY></HTML>

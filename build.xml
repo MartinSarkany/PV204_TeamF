@@ -1,0 +1,181 @@
+<project name="jpws 0-7-1" basedir="." default="help">
+
+	<property name="ver" value="0-7-1" />
+	<property name="pwslib-ver" value="2-5-1" />
+	<property name="year" value="2016" />
+	<property name="release date" value="26 Mar 2016" />
+	
+<!--   DIRECTORIES                                                    -->
+<!--   you might have to adapt these settings to your current installation  -->
+
+	<property name="src" value="${basedir}/src" />
+	<property name="doc" value="${basedir}/doc" />
+	<property name="dist" value="${basedir}/bin" />
+	<property name="res" value="${basedir}/resource" />
+	<property name="apidoc" value="${basedir}/doc/api" />
+	<property name="build" value="${basedir}/build" />
+	<property name="resource" value="${basedir}/resource" />
+	<property name="lib" value="${basedir}/lib" />
+	<property name="pwslib" value="../PWSLIB3" />
+
+<!--   FILES                                                          -->
+<!--   you might have to adapt these settings to your current installation  -->
+
+	<property name="backlib" value="${pwslib}/bin/pws-engine-kse.jar" />
+	<property name="backlib-ftp" value="${pwslib}/bin/pws-suppl-ftp.jar" />
+	<property name="backlibpack" value="${pwslib}/bin/pws-engine-kse-${pwslib-ver}.zip" />
+	<property name="backlibsource" value="${pwslib}/bin/pws-engine-source-${pwslib-ver}.zip" />
+	<property name="java1.6-runtime" value="/usr/lib/jvm/java-6-openjdk-amd64/jre/lib/rt.jar" />
+   <property name="junit" value="${lib}/junit-4.jar"/>
+   <property name="kunststoff" value="${lib}/kunststoff.jar"/>
+   <property name="jgoodies" value="${lib}/plastic.jar"/>
+   <property name="pagosoft" value="${lib}/PgsLookAndFeel.jar"/>
+   <property name="oyoaha" value="${lib}/oalnf/oalnf.jar"/>
+   <property name="keystore" value="../kseKeystore"/>
+
+
+<!--   TEXT AND LISTS                                                 -->
+
+   <property name="docfileset" value="License.txt Readme.txt Changelog.txt" />
+   <property name="rootfileset" value="build.xml MANIFEST.MF .classpath .project" />
+   <property name="externclasspath" value="${backlib};${backlib-ftp};${kunststoff};${jgoodies};${pagosoft};${junit}" />
+
+
+
+<target name="init">
+    <!-- Create the time stamp -->
+    <tstamp/>
+    <mkdir dir="${dist}"/>
+    <mkdir dir="${build}"/>
+</target>
+
+<target name="api" depends="init" description="create Javadoc API for frontend application">
+<javadoc packagenames="org.jpws.*"
+           sourcepath="${src}" 
+	   encoding="ISO-8859-1" 
+           excludepackagenames="" 
+           defaultexcludes="yes"
+           destdir="${apidoc}"
+           classpath="${externclasspath}"
+           author="true"
+           version="true"
+           windowtitle="JPasswords ${ver} Frontend API Documentation">
+<bottom><![CDATA[<i>JPWS ${ver}, Copyright &#169; ${year} Wolfgang Keller (KSE). All Rights Reserved. Contact kse@sourceforge.net</i>]]></bottom>
+<Header><![CDATA[<b>JPasswords ${ver}</b>]]></Header>
+<Doctitle><![CDATA[JPasswords ${ver} API Documentation<p>Based upon KSE-PWSLIB ${pwslib-ver}
+          <br>Release Date: ${release date}</p>]]></Doctitle>
+</javadoc>
+</target>
+
+
+<target name="jar" depends="comp" description="create JPWS frontend executable">
+<!-- remove previous outputs except standard executable -->
+<property name="programname" value="${dist}/jpws-${ver}" />
+<delete file="${programname}.jar"/>
+<delete file="${programname}-U.jar"/>
+
+<!-- create the executable (versioned name) -->
+<jar destfile="${programname}.jar" manifest="MANIFEST.MF" update="false">
+   <fileset dir="${build}" includes="org/jpws/**" excludes="**/Test*"/>
+   <zipfileset dir="${resource}" prefix="org/jpws/front/resource" />
+   <zipfileset src="${backlib}" excludes="**/Test*"/>
+   <zipfileset src="${backlib-ftp}" excludes="**/Test*"/>
+   <zipfileset src="${kunststoff}"/>
+   <zipfileset src="${jgoodies}"/>
+   <zipfileset src="${pagosoft}"/>
+</jar>
+
+<!-- jar-sign the output if access keys are available -->
+<antcall target="signjar">
+   <param name="sfile" value="${programname}.jar" />
+   <param name="ufile" value="${programname}-U.jar" />
+</antcall>
+
+<!-- make a copy to standard executable name -->
+<copy file="${programname}.jar" tofile="${dist}/jpws.jar" overwrite="yes"/>
+</target>
+
+
+<target name="signjar" >
+<!--<target name="signjar" if="P0" >-->
+<copy file="${sfile}" tofile="${ufile}" overwrite="yes"/>
+<input message="Password for Keystore: " addproperty="spass" /> 
+<input message="Password for KSE: " addproperty="kpass" /> 
+<signjar jar="${sfile}" alias="kse"  storepass="${spass}" keypass="${kpass}"
+   keystore="${keystore}" />
+<!-- <signjar jar="${sfile}" alias="kse" storepass="${P0}" keypass="${P1}"
+   keystore="${keystore}" /> -->
+</target>
+
+
+<target name="clear-c" description="remove class files from build area">
+<delete>
+   <fileset dir="${build}" includes="**/*.class"/>
+</delete>
+</target>
+
+<target name="comp" depends="init,clear-c" description="compile JPWS frontend application">
+   <javac srcdir="${src}"  destdir="${build}" includeantruntime="false"
+       source="1.6" target="1.6" bootclasspath="${java1.6-runtime}"
+       classpath="${externclasspath}" encoding="ISO-8859-1" />
+</target>
+
+<target name="dist" depends="comp,api,jar" description="create JPWS Frontend distribution package">
+<zip destfile="${dist}/jpws-devel-${ver}.zip">
+    <zipfileset dir="${apidoc}" prefix="jpws/doc/front/api"/>
+    <zipfileset src="${backlibpack}" includes="pwslib/doc/api/**" prefix="jpws/doc/back/api"/>
+    <zipfileset dir="${basedir}" includes="${rootfileset}" prefix="jpws" />
+    <zipfileset dir="${doc}" includes="${docfileset}" prefix="jpws/doc" />
+    <zipfileset dir="${resource}" prefix="jpws/resource"/> 
+    <zipfileset dir="${src}/org/jpws" prefix="jpws/src/org/jpws"/>
+
+    <zipfileset file="${backlib}" prefix="jpws/lib"/>
+    <zipfileset file="${backlib-ftp}" prefix="jpws/lib"/>
+    <zipfileset file="${backlib}.sig" prefix="jpws/lib"/>
+    <zipfileset file="${backlib-ftp}.sig" prefix="jpws/lib"/>
+    <zipfileset file="${junit}" prefix="jpws/lib"/>
+    <zipfileset file="${kunststoff}" prefix="jpws/lib"/>
+    <zipfileset file="${kunststoff}.sig" prefix="jpws/lib"/>
+    <zipfileset file="${jgoodies}" prefix="jpws/lib"/>
+    <zipfileset file="${jgoodies}.sig" prefix="jpws/lib"/>
+    <zipfileset file="${pagosoft}" prefix="jpws/lib"/>
+    <zipfileset file="${pagosoft}.sig" prefix="jpws/lib"/>
+  </zip>
+<checksum file="${dist}/jpws-devel-${ver}.zip"/>
+</target>
+
+<target name="trans" description="transfers public project files to SVN space">
+<mkdir dir="${sftrans}"/>
+<copy todir="${sftrans}/src" preservelastmodified="true" >
+    <fileset dir="${src}" includes="**/*.java" excludes="**/Test*"/>
+</copy>
+<copy todir="${sftrans}/resource" preservelastmodified="true">
+    <fileset dir="${res}" includes="**/*.*"/>
+</copy>
+<copy todir="${sftrans}" preservelastmodified="true">
+    <fileset dir="${basedir}" includes="${rootfileset}" />
+</copy>
+<copy todir="${sftrans}/doc" preservelastmodified="true">
+    <fileset dir="${doc}" includes="${docfileset}" />
+</copy>
+<copy file="${kunststoff}" todir="${sftrans}/lib"  preservelastmodified="true" />
+<copy file="${jgoodies}" todir="${sftrans}/lib"  preservelastmodified="true" />
+<copy file="${pagosoft}" todir="${sftrans}/lib"  preservelastmodified="true" />
+<!--<copy file="${junit}" todir="${sftrans}/lib" />-->
+<copy file="${backlib}" todir="${sftrans}/lib" preservelastmodified="true" />
+<copy file="${backlib}.sig" todir="${sftrans}/lib" preservelastmodified="true" />
+<copy file="${backlibsource}" todir="${sftrans}/lib" preservelastmodified="true" />
+<copy file="${backlibsource}.sig" todir="${sftrans}/lib" preservelastmodified="true" />
+</target>
+
+<target name="help">
+	<echo>Targets:
+--------
+jar          - create JPWS executable jar
+api          - create Javadoc API for frontend application
+dist         - create JPWS-F distribution package
+clear-c      - remove class files from build area
+trans        - move a snapshot of the project to another place		
+	</echo>
+</target>
+</project>

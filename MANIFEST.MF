@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Main-Class: org.jpws.front.PwsafeJ
+Class-Path: 
+Created-By: Wolfgang Keller
+

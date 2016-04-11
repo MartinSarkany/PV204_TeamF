@@ -1,0 +1,79 @@
+<HTML>
+<HEAD>
+   <meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+</HEAD>
+<BODY>
+
+<H2><font color="#8B0000">User Release Notes for JPasswords 0-7-0</font></H2>
+
+The following text lists some of the most important features of <i>JPasswords 0-7-0</i> in form of an essential change log. A more detailed log can be found in the document folder of the developer packages or at the project homepage.
+
+<p>GUI languages: English (EN), German (DE), Spanish (ES).
+
+<br><H3>New Features (since 0-6-0)</H3>
+<OL>
+<LI><b>Enhanced FTP-Access</b><br>FTP file access was modernised and made to operate faster and more responsive. A new login panel to greater user comfort is supplied. Also, it is now possible to create new database files via FTP access. For this any unknown file path can be entered into the URL loading panel. This facility has to be enabled in Preferences.
+</LI>
+
+<br><LI><b>Shortcut Keys</b><br>Shortcut keys have been introduced as a mean for quick opening of database entries into the entry editor. Assignment of any keys to entries is performed in the entry editor. The complete policy on shortcut key usage is explained in the <a href="http://sourceforge.net/p/jpws/wiki/shortkey-docu/">Wiki Manual</a> on our Sourceforge project site.
+</LI>
+
+<br><LI><b>Automated Storage of "Minor Changes"</b><br>Minor database changes - changes which only relate to GUI comfort (like e.g. the "Recently Used" entry list) - are now stored in conceiled form on the local Java platform. This makes them available at the work-station without need of saving a modified database. No data security risk arises! These data are also made available on the database when it is saved. If for any reason minor changes have to be always stored on file, the corresponding option has to be checked in program preferences.
+</LI>
+
+<br><LI><b>Layered Password Policies</b><br>The Password Policy (rules for random password creation) is now available with potentially different values on 3 levels: <font color="green"><b>Global</b></font> (in Preferences), <font color="green"><b>File</b></font> (in "Manage" menu) and <font color="green"><b>Record</b></font> (in entry editor). Each level points to its higher ranking predecessor if it is not modified explicitly.
+</LI>
+
+<br><LI><b>Portable Installation Service</b><br>The "Portable Installation" service under "Help" menu has been worked over and now allows to include the currently running JRE into a PORTABLE installation. The complete logic of this service is supplied in our <a href="http://sourceforge.net/p/jpws/wiki/portable-installation/">Wiki Manual</a> pages.
+</LI>
+
+<br><LI><b>Overhauled Acceleration Keys and Quick-Search Panel</b><br>Menu acceleration keys have been enriched and there were some renames. ENTER (edit), INSERT (new) and DELETE (remove) are now meaningful standard keys in the entry list display. Buttons and logic of the Quick-Search panel have been enhanced and extended by a "remove expression" function. Note: the Quick-Search panel is now invoked by the CTRL-Q button (which replaces CTRL-S).
+</LI>
+</OL>
+
+<br><H3>New Features (since 0-5-0)</H3>
+<OL>
+<LI><b>Multi-File Desktop</b><br>Multiple files (up to 64) can now be opened in the new multi-file desktop modus. Each file is kept within an internal frame and can be dealt with individually, minimised/maximised or used for data exchange. There are now two basic desktop modi: SINGLE-FILE and MULTI-FILE which can be toggled at a toolbar icon or in the menu. There also is an option in Program Preferences allowing to switch off this new feature.</LI>
+
+<br><LI><b>Drag & Drop of Items</b><br>The long-awaited drag and drop of entries facility may now take place both within a single file or between two simultaneously open files. Drag objects can be single database entries, groups of entries or any user-selected sets of entries.</LI>
+
+<br><LI><b>Improved External Clients Call</b><br>Automated calls to external standard applications for Internet browsing and writing mails (entry of an application path is no more required). "Email" field in entry editor can be used to start mail client.</LI>   
+
+<br><LI><b>Operating System Icon Tray</b><br>Optional cooperation of <i>JPasswords</i> with the Operating System Icon Tray, supplying a program icon with context menu. (Does not work on all Unix/Linux systems due to lack of support by the OS.) The system tray icon offers invisibility of the program while iconified.</LI>
+
+<br><LI><b>Entry Category: Favourites</b><br>Database entries may now be marked as "Favourites" in the record editor or via context menu in list view of a database. Favourites can get quickly accessed after opening a database by filtering for "Favourites". This filtering can be instantly triggered through a new toolbar icon or by pressing CTRL-B on the keyboard. The use of Favourites can be switched off in program preferences.</LI>
+
+<br><LI><b>Find-As-You-Type</b><br>CTRL-S on the keyboard initiates a new and comfortable search function built into the display frame of a database. Search results are listed in a dynamic filtering modus just while you type your search string. Moreover, search strings can get memorised and will be auto-completed during input. This combination of features provides the quickest possible search method available. </LI>
+
+<br><LI><b>Enhanced and Customisable Toolbar</b><br>Program toolbar has been amplified with several new icons which are not all visible by default. The toolbar can be customised through a simple context menu available by right-click on the toolbar. Have fun! (Availability of icons may depend on settings in program preferences.)</LI>
+
+<br><LI><b>Enhanced Entry Features</b><br>A new text field has been integrated into the entry data record: "<b>Email</b>". There is no specific purpose linked to it and it may be used to the user's discretion. (The intended purpose here with me was to rather store my own email address which I make available at the target sites. But this of course is a personal choice.) 
+In the <b>Password Policy</b> now "<b>Symbols</b>" can be adjusted to custom setup, including custom new symbols.</LI>
+
+<br><LI><b>Basic Printing Ability</b><br>Added printing ability to the NOTES text field in entry editor, available through the context menu.</LI>
+
+<br><LI><b>Smart Extracted URL and Mail Calls</b><br>In the NOTES text field, a right-click extracts URL and Email statements and offers you a list to launch them easily.</LI>  
+
+<br><LI><b>Enhanced Data Safety: Automatic File Mirroring</b><br>To protect you against data loss through unexpected program termination, dramatically enhanced security has been implemented. This comprises record editing and mirroring of modified file states into security copies in the background. This all is done without bothering the user of this logic. In case of an unexpected shutdown, these mirrors are automatically identified and offered to substitute or merge with the user's database in the next session. What more can you wish? - This feature can be switched off in program preferences.</LI>
+
+<br><LI><b>Enhanced PORTABLE Modus</b><br>More accurate memory of individual GUI states when changing hosts in PORTABLE modus (frame, browser, fonts, and some security switches).
+The meanwhile famous <i>JPassword</i> Portable Modus allows you to run your password safe in the same environment on a USB-stick or diskette while changing to various hosts. Beside improved stability of the feature, it is now very simple to create a PORTABLE program installation on a removable medium. Go to "Help->Create Portable Installation" and after a few settings you are done!</LI>
+
+<br><LI><b>Global Password Generator</b><br>A random password generator has been made available on the global program level including a separate password policy assigned to it. Generated passwords stay inside a window and can optionally be copied into the system clipboard. This gives you a qualified tool at hand, rendering, to the best of my knowledge, cryptographically valid random generation. (Legal disclaimer!) 
+Since RC3 this generator is also available in the entry editor to produce additional passwords you may wish to store in the NOTES field, e.g.</LI>
+
+<br><LI><b>ESCAPE Button "Offensive"</b><br>The ESCAPE button as a closing/termination trigger is now available on most of the windows, dialogs and filtering functions of the program. This makes handling a lot smoother. As a general rule, filtering functions can also get terminated by repeatedly pressing their init key.</LI>
+
+<br><LI><b>Windows Installer and Executable</b><br>In order to spread popularity of <i>JPasswords</i>, a Windows Executable has been created for download (using <i>Launch4J</i> project) which requests a Java Virtual Machine being installed on the target computer. A complete Windows Installer is in the planning! <!--Alternatively, a complete Windows installer is available for download which contains Java VM redistributables to be installed as a private runtime environment for the <i>JPasswords</i> program. The new Windows installer should allow any non-expert Windows user to easily install and use <i>JPasswords</i> (Windows-XP and later).--></LI>
+
+<br><LI><b>New LAF Entries</b><br>New Look-and-Feel abstract names "CROSS-PLATFORM" and "NATIVE" have been introduced, which are selectable just as any "natural" LAF. These names are comfortable for users who run a program setup in the PORTABLE Modus, as they can avoid setting up different Look-and-Feels by direct reference on the long course of their OS environments. Furthermore, "PgsLookAndFeel" (PagoSoft) has been - experimentally - added to available LAFs of <i>JPasswords</i>.</LI>
+
+<br><LI><b>New Interface Language: SPANISH</b><br></LI>
+
+<br><LI><b>New Commandline Abilities</b><br>Commandline switches have been extended. "<b>/c:&lt;country&gt;</b>" adds to setting up the country component of the customisable <b>Locale</b> feature. (A Locale consists of &lt;language, country&gt;.)
+Second, "<b>/o:&lt;path&gt;</b>" has been modified. It now allows to state either a file or a directory path.</LI>  
+
+</OL>
+
+
+</BODY></HTML>

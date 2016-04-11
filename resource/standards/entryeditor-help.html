@@ -1,0 +1,136 @@
+<HTML>
+<HEAD>
+   <meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+</HEAD>
+<BODY>
+
+<H2><font color="#8B0000">ENTRY EDITOR</font></H2>
+
+<H2><font color="#005FBF">General</font></H2>
+
+In <b>Entry Editor</b> you work on the data of a single password entry (secret key) of the database. The editor serves both for creating new and modifying existing records. As useful external effects, username and password may get copied to the System-Clipboard and URL references started in the external browser.  
+
+<H2><font color="#005FBF">Work Panels</font></H2>
+
+Data of an entry are organized into several work panels. How many panels are available depends on actual data of the record and settings in options.
+
+<P>Possible work panels are <font color="#005FBF"><b>Login</b></font>, <A HREF="#notes"><font color="#005FBF"><b>Notes</b></font></A>, <A HREF="#times"><font color="#005FBF"><b>Times</b></font></A> und <A HREF="#history"><font color="#005FBF"><b>History</b></font></A>.
+
+<H2><font color="purple">Panel "Login"</font></H2>
+
+Work panel <b>Login</b> encompasses the main data group of an entry and contains fields <b>Title</b> and <b>Password</b>, which are mandatory for each database entry. Basic idea of this group is that there exists a protected target zone for which username and password serve as legitimation of access.
+
+<H3><font color="#005FBF">Control Elements</font></H3>
+
+<table cellpadding="6">
+
+<tr><td valign="top"><b><font color="red">Group</font></b></td>
+<td><i>Editable choice field</i>, which can assign an entry to a group. All already used group names are available here for choice. Moreover, <u>new group names</u> may be created by simply editing the field text. Groups are organized hierarchically in a tree; singular nodes of the tree are separated by a dot '.' character. 
+</td></tr>
+
+<tr><td valign="top"><b><font color="red">Title</font></b></td>
+<td><i>Text</i>. <u>Designation of an entry</u>. This field has always to be assigned, but a value may appear more than once in the database.
+</td></tr>
+
+<tr><td valign="top"><b><font color="red">Username</font></b></td>
+<td><i>Text</i>. Username, which e.g. may be relevant for the LOGIN into a protected zone. The username  may be copied to the System-Clipboard through icon <IMG SRC="../images/copyuser.gif" WIDTH="16" HEIGHT="16"> in the tool bar.
+</td></tr>
+
+<tr><td valign="top"><b><font color="red">Password</font></b></td>
+<td><i>Text</i>. Password (or passphrase), which e.g. may be relevant for the LOGIN into a protected zone. This field has always to be assigned. In display it can optionally be held covered and shown or hidden through use of button  "<b>Show/Hide Password</b>". It is recommended to have new passwords created by aid of automated function "<b>Generate Password</b>" in order to provide maximum security. The password  can be copied to the System-Clipboard through icon <IMG SRC="../images/copypass.gif" WIDTH="16" HEIGHT="16"> in the tool bar. 
+</td></tr>
+
+<tr><td valign="top"><b><font color="red">Email</font></b></td>
+<td><i>Text</i>. Specify an <u>Email Address</u>. The purpose of the content is unbound.
+</td></tr>
+
+<tr><td valign="top"><b><font color="red">URL</font></b></td>
+<td><i>Text</i>. Statement of an <u>Internet-Address</u> (e.g. website), which is understood as target zone for the LOGIN. By use of icon <IMG SRC="../images/webworld16.gif" WIDTH="16" HEIGHT="16"> a valid address contained within the field will get launched in the external browser. If the field, on contrary, is left empty, a valid Internet-address in the System-Clipboard is assumed as value.
+</td></tr>
+
+<tr><td valign="top"><b><font color="red">Notes</font></b></td>
+<td><i>Text area</i>. A multi-line text area may be used for notes of any kind. This field is equipped with a context menu (via right-click) and can be torn off into a separate editor window by clicking icon <IMG SRC="../images/leftarrow16.png" WIDTH="16" HEIGHT="16">. Beside the benefits of a size-adjustable editor, this gives you the advantage of administering notes parallel to other work panels. (This field is unavailable if the <b>Notes</b> work panel is enabled.) </td></tr>
+
+
+</table>
+
+<A NAME="notes">
+<H2><font color="purple">Panel "Notes"</font></H2></A>
+
+Work panel <b>Notes</b> contains the text area <b>Notes</b> of the entry, if program preference  "<b>Display->edit NOTES in separate panel</b>" is checked. Otherwise this field is contained in smaller form within panel <b>Login</b>.
+
+
+<A NAME="times">
+<H2><font color="purple">Panel "Times"</font></H2></A>
+
+Work panel <b>Times</b> contains time information which is related to the record in total or the password in specific. It allows the statement of an expire date for the password.
+
+<H3><font color="#005FBF">Information Elements</font></H3>
+
+<table cellpadding="6">
+
+<tr><td valign="top"><b><font color="red">Record Created</font></b></td>
+<td><i>Time</i>. Time-point when the record was created. This information stays unchanged for the lifetime of an entry. (However, in a duplicate of an entry this value is updated.)
+</td></tr>
+
+<tr><td valign="top"><b><font color="red">Record Modified</font></b></td>
+<td><i>Time</i>. Time-point when the record was last modified. Modifications relate to data elements which can get edited by the user. (Note that this value remains unchanged during a single editor session.)
+</td></tr>
+
+<tr><td valign="top"><b><font color="red">Password Accessed</font></b></td>
+<td><i>Time</i>. Time-point when the password was last used. A usage event occurs when the password has been copied into System-Clipboard by use of some command element (e.g. toolbar icon). If the value is displayed grey, it means that usage events are currently not evaluated. (These events are evaluated when the database is already modified or program preference "<b>General->store minor database changes</b>" is checked.)</td></tr>
+
+<tr><td valign="top"><b><font color="red">Password Modified</font></b></td>
+<td><i>Time</i>. Time-point when the password was last modified.  
+</td></tr>
+
+<tr><td valign="top"><b><font color="red">Passwort Expiry</font></b></td>
+<td><i>Time</i>. Time-point when the password will become invalid. Display "<b>?</b>" means the password is valid unlimited. Expiry date can get modified by use of the following control elements.
+</td></tr>
+
+</table>
+
+<H3><font color="#005FBF">Control Elements</font></H3>
+
+<table cellpadding="6">
+
+<tr><td valign="top"><b><font color="red">Duration of Validity</font></b></td>
+<td><i>Choice field</i> with several time-periods for the validity of the password, measured from the date of its last modification. By selection of a choice, the expiry date of the password is fixed in a simple way. Moreover, stating a time-period has the advantage that modification of the password at a later time will cause automatic recalculation of the expiry date.</td></tr>
+
+<tr><td valign="top"><b><font color="red">Days</font></b></td>
+<td><i>Integer</i>. If "<b>Period</b>" is selected for validity, the number of days may be specified here. Possible values are in the range 0 to 3650.
+</td></tr>
+
+<tr><td valign="top"><b><font color="red">Special Expiry Date</font></b><br><IMG SRC="../images/painter.png" WIDTH="16" HEIGHT="16"></td>
+<td><i>Text input dialog</i>. With this dialog a special expiry date can be set up for the password, e.g. when stating a standard time-period is not suitable.
+</td></tr>
+
+<tr><td valign="top"><b><font color="red">Shortcut Key Assignment</font></b><br><IMG SRC="../images/keyboard.png" WIDTH="24" HEIGHT="24"></td>
+<td><i>Dialog with keyboard input</i>. With this dialog a particular keyboard shortcut can be assigned for the entry. The key can be used in main display to call the record into the entry editor. Some keys cannot be assigned. Menu acceleration keys may be excluded from operation, depending on the setting of the correspondent program option.
+</td></tr>
+
+</table>
+
+<A NAME="history">
+<H2><font color="purple">Panel "History"</font></H2></A>
+
+Work panel <b>History</b> stores up to 255 backward versions of the password. Each modification of the password in panel <b>Login</b> automatically causes an entry of the old value into password history, provided the history function is not switched off. The maximum of entries in the history can be set up individually for each database record, the default value being 16. Note that this panel is only displayed if the history contains at least one entry.
+<H3><font color="#005FBF">Control Elements</font></H3>
+
+<table cellpadding="6">
+
+<tr><td valign="top"><b><font color="red">Clear</font></b></td>
+<td><i>Funktion</i>. This function erases the entire password history.
+</td></tr>
+
+<tr><td valign="top"><b><font color="red">Maximum</font></b></td>
+<td><i>Function</i>. Here the maximum number of stored passwords in the history can be set to a value between 0 and 255. If the history exceeds the maximum value, the oldest entries are removed. This also holds for current entries through password modifications.
+</td></tr>
+
+<tr><td valign="top"><b><font color="red">Off</font></b></td>
+<td><i>Function</i>. With this function password history gets switched off. In "Off"-state no modifications are protocolled into the history while its work panel is still invisible. In order to activate History again, click on the "On" button which is now in place of the "Off" button.
+</td></tr>
+
+</table>
+
+</BODY></HTML>

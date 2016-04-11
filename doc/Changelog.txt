@@ -1,0 +1,412 @@
+Project JPasswords JPWS
+CHANGELOG 
+
+Reference JVM version: 1.6.0
+Available language versions: English, German, Spanish
+Database format: PWS-V3.13
+
+*** Release V 0-7-1 ***, 26 Mar. 2016
+
+CORRECTED BUGS
+- PortableInstallationDialog allows to integrate the current JRE into a PORTABLE installation
+  (this feature was announced for 0-7-0 but effectively unavailable)
+- Colour contrast in Table View is now automatically adjusted to always render legible lines
+
+NEW FEATURES
+- overhauled and simplified PortableInstallationDialog 
+- PortableInstallationDialog now supplies all types of program files even when run from
+  a Windows EXE program version (boosts cross-platform feature)
+- PreferencesDialog allows to set up reference to the email client application used
+  to start mail writing
+- Extended multi-threaded approach for "File" menu commands; several tasks can run parallel
+- Some info and operation dialogs which were modal before are now in non-modal (parallel) mode
+- Behaviour of Password History panel has been slightly modified as to the effects of the
+  "Off/On" switch
+
+INTERNALS
+- ActionHandler was overhauled to run thread pools for many of the program's tasks.
+  It now offers support for immediate, delayed and periodic task initiation.
+- Menu commands via ActionHandler now run by default on the EDT instead in a separate
+  thread. In contrast, file loading and saving commands regularly run in dedicated tasks.
+- Parallel processing for "Close-All" and "Save-All" commands when multiple files are
+  open in the desktop.
+- New technology implemented for record editor. Commands now mostly run on the EDT.  
+
+
+*** Release V 0-7-0 ***, 24 Dec. 2015
+
+CORRECTED BUGS
+- the possibility of re-opening a very recently closed database without input of 
+  secret key has been removed
+
+NEW FEATURES
+- FTP file access was modernised by making it rely on package ftp4j.jar (Sauron Software).
+  Overall operation time has largely improved. A new login dialog is supplied.
+- it is now possible to create database files via FTP access. This facility has to be
+  enabled in Preferences, by default it is switched off.
+- storage of minor changes, like file usage recording data, is now stored and retrieved 
+  locally when program option "store minor file changes into database" is disabled in
+  program preferences. Thus it is possible to keep track of usage data without having to
+  save the database.
+- shortcut keys have been introduced and allow to open particular entries into the entry 
+  editor upon key-hit. Assignment of keys to records is performed in the entry editor.
+  Policies on short-key usage in JPasswords is more precisesly explained in the Wiki Manual
+  on our Sourceforge project site.
+- the Password Policy (random password creation rules) is now differentiated on 3 levels:
+  Global (in Preferences), File (in "Manage" menu) and Record (in entry editor). File and
+  Record levels take reference to a predecessor's content by default, but can be overridden
+  by individual settings.
+- buttons and logic of the Quick-Search panel (CTRL-Q) have been overhauled and extended
+  by a "remove expression" function.
+- the "Portable Installation" service (under "Help" menu) has been enhanced. It now allows 
+  to include the running JRE into an installation. The complete logic of this service will
+  be supplied in the Wiki Manual pages.
+- acceleration keys in the main menu have been amplified
+- ENTER (edit), INSERT (new) and DELETE (remove) are now meaningful standard keys in the 
+  entry list display.
+
+INTERNALS
+- FTP service module ftp4j.jar was added to the project and is bundled with the jpws 
+  executable. ftp4j appears by Sauron Software, Italy, under the LGPL 2 license.
+
+
+*** Release V 0-6-0 M7 ***, 01 Mar. 2013
+
+CORRECTED BUGS
+- removed a bug that made popup-menu command "tear off notes" inactive in editor.notes field
+- improved text display in preferences dialog
+- removed a glitch with identifying the "program path" attribute in some environments which call
+  the application through a symbolic link instead of a direct reference.
+
+NEW FEATURES
+- Editor: Password Policy in generation of additional random password (button "Additional Password")
+  is now the record's own policy if available. 
+- re-installation of mirrors for new (unsaved) databases improved (re-installs now as "New File" 
+  without tagging the container as mirror or backup)  
+- new Preferences feature to select from various date and time rendering formats 
+- added paging functionality to the Quick-Search panel. You can return to previous search 
+  expressions by arrow buttons. 
+- updated "File Info" panel. It now shows user name, host and application of most recent
+  saving session. "Signature" has been replaced by a serial version number x of the file
+  indicated by "(SV x)" after the file name.    
+
+INTERNALS
+- IOManager: implemented wait cycles in case of IO access conflicts (5 seconds retry time)
+- security update for the encryption/decryption process. With thorough memory testing
+  some spreading of decrypted content garbage onto the VM data heap have been removed. 
+  JPasswords VM memory should now be clean from decrypted database content except for 
+  Title, User-Name and those data parts which have been made visible by the user.
+- cryptographical random generator now runs on SHA512 instead of SHA1.   
+- JPWS relies on updated PWSLIB version 2-3-1.   
+
+
+*** Release V 0-6-0 RC3 ***, 17 Nov. 2012
+
+CORRECTED BUGS
+- some errors concerning Undo/Redo of modifications to Password Policy in the entry editor
+- improved stability of Undo/Redo for external file imports (backups)
+- removed an error which occasionally produced meaningless "PROJECT NEWS" messages
+- removed an error which possibly spoiled display after returning of the program from IDLE or ICONIFIED state
+- some corrections and improvements concerning database recovery and mirroring
+- removed an error which disabled user defined display fonts  
+
+NEW FEATURES
+- possibility to define own special characters (modifications to set "symbols") in password policies (compatibility to file format 3.10)
+- calls to Help dialogs (normally a button) are now toggle functions which show and hide the dialog depending on its showing state
+- improved IO-logic to addressing files which are open and modified in the JPWS Desktop
+- call of an external email client in entry editor via button or context command in text fields
+- restructured call of external browser to start OS standard browser if user option
+  for browser is left void (Preferences)
+- removed offering of automatically detected browser applications during program startup
+  (moved this offering to a button in Preferences instead)
+- added cooperation of JPasswords with the Operating System Icon Tray, supplying a program icon
+  (this feature is working for Windows OS; Linux environments, and their JVM systems, mighty be less ready to work error free. We recommend to use the Tray Icon feature only after thorough testing!)  
+- the system tray icon offers invisibility of the program while iconified plus some
+  basic operations like adding new records and calling most recently used ones
+- the system tray icon brings up the program's surface from invisibility when double-clicked (activated)   
+- commandline option "/o" now allows to specify a directory or a file. If a directory is given, INI-files of both Unix and Windows flavour are being searched there. Non-existing structures from the "/o" path are created.
+- added function button in entry editor to generate additional random passwords
+- added basic print ability to text areas via context menu, like e.g. for entry "Notes"
+- overhauled Locale support and new command-line parameter "/c:<country>" for user setting of locale country 
+- support of the SPANISH GUI language "es" (with exception of most html texts)
+- improved extraction from NOTES text area into context menu list via right-click: contained URLs to browse and MAIL addresses to write to
+- text field context commands COPY, CUT, DELETE are now acting as if "all" was selected if nothing is selected    
+- more accurate memory of individual GUI states when changing hosts in PORTABLE modus (frame, browser, fonts, and some security switches)
+
+INTERNALS
+- File format is now compatible with PWS Format 3.10 (Project "Password Safe"). Implications for the following features:
+  o modified Password Policy storage
+  o List of Recently Used Entries is now stored following the format definition
+- overhauled dialog and message system (exclusively project-own structures used)
+- removed the PORTABLE modus option history and switched to host-borne usage states (Java VM Preferences mechanism)
+- overhaul of display event handling chain results in speeded list display with improved security
+
+
+*** Release V 0-6-0 RC2, 05 May 2012 ***
+
+Modifications against RC1
+-------------------------
+
+Bugfix::
+- drag & drop functional in java-6
+- Nimbus LAF operational
+- improved stability of list display and trans-session memory
+
+New Features::
+- new outfit for file access password setup
+- password generation optional during file access password setup
+- file mirroring extended to new files without path
+- free floating additional command bar in entry editor
+- blindfolding of list display after selectable time
+- optional automatic copy of password after starting to browse an URL
+- text editor shortcut keys for current date and time input
+- updated user help texts
+- updated auto-install browser application paths
+- EMAIL, INTERVAL und POLICY new columns in csv-export/import format
+- new EMAIL functionality button in entry editor
+- countless minor enhancement and fixes 
+
+- - - - - - - - - - - - -
+KNOWN ISSUES:
+
+1 - For automated function "Create Portable Installation" any one or both of files "jpws.jar", "jpws-s.jar" have to be present in the program directory of JPasswords.
+2 - There is a probability of dead-locking the application during definition of the password for a new database when using the "Generate" button and when run under SUN JVM. In any case of dead-lock, and if you have work to save, it is recommended to wait for 2 minutes before terminating the program by force as the auto-mirror thread normally still works fine. 
+
+
+*** Release V 0-6-0 RC1, 10 Feb. 2010 ***
+
+CORRECTED BUGS
+- removed a bug that caused failing program termination under Mac-OS
+  (request 1265649)
+
+NEW FEATURES
+- multi-file desktop modus allows parallel open of up to 10 files
+- in-operation switching between multi and single file view
+- each open file has its own undo-manager
+- save-modified control of any open file (regardless of actual
+  view modus) when program terminates
+
+- drag and drop of selected entry items or groups in list views
+  (tree and table view)
+- DnD operation modi "move" (standard) or "copy" (CTRL key pressed)
+- DnD MOVE conserves record UUID while COPY always creates a new UUID
+- DnD works intra-file or in exchange with another file
+- DnD operations are undoable (in multi-file operation transaction is
+  split into sending and receiving part and represented in two different
+  undo-managers)
+
+- quick-search (QS) facility as part of the file view panel 
+  called through CTRL-S on the currently selected file
+- QS function causes filtered list view showing search results only
+- QS parameters "case sensitive" and "whole words" derived from "Find" dialog
+  (including life update function on modifications)
+- Find and QS search text fields have auto-complete function basing on 20 most 
+  recently used values
+
+- entry editor shows debug values "UUID" and "Signature" (referring to record) 
+  in tab "Times" if and only if program setting "Monitor" == ON
+- new look-and-feel "PagoSoft" 
+
+
+*** Release V 0-5-0, 01 Sep. 2007 ***
+
+CORRECTED BUGS
+- removed a malfunctioning in FTP/HTTP-adapter which caused occasional
+  incomplete file downloads
+- removed a bug which allowed for corrupted database files when insufficient space
+  on the storage device 
+- removed a (non-functional) possibility to select multiple groups or groups 
+  and records mixed in tree view
+- removed a malfunctioning in Font selector dialog which failed to
+  highlight the font family name in some cases
+- GROUP data field in entry editor now has a display size limit
+- KeePass CSV import facility now supports URL-field
+- Last Used and Last Edited submenus are now disabled entries when empty
+- removed a bug that caused file UUID divergency of display and saved file
+  for new databases
+- removed a bug that caused a new file UUID created for saved .BAK files
+- data signature value in File Information now also reflects file header fields
+- improved stability on OS-triggered application shutdown (adaption to bug in Java 1.5)
+
+NEW FEATURES
+- UNDO manager in list-level for 14 different cases of user triggered file modifications 
+  (targeted to comprise all possible modification types)
+- UNDO manager in entry-editor to comprise: revert command, password generation, GROUP
+  assignment, expiry assignment, password history settings
+- UNDO manager for text components in entry editor (usable through CRTL-Z, CTRL-Y
+  or popup menu in NOTES)
+- PORTABLE modus of program execution, detected automatically when INI file is present
+  in program directory; may also be forced with commandline option "/p"
+- PORTABLE modus: automatic adjustment/correction of all platform specific preferences 
+  based upon preference history (comprises Browser, GUI-Style and Fonts)
+- PORTABLE modus: automatic adjustment/correction of recent open file list and standard
+  directories to reflect altering path names of PORTABLE ROOT directory in different 
+  host environments
+- PORTABLE ROOT directory is the anchor directory for a program session in PORTABLE modus.
+  All filepath adjustments are related to this base directory
+
+- new data elements in File Information (logical database name, database description text,
+  security level, last save time)
+- logical database name may be used as a substitute for file path name in some information
+  contexts
+- user choosable four database security levels (Basic, Medium, Advanced, Top Secret) 
+  concerning "calculation loops" parameter for database encryption; security level of a 
+  file can be modified at any time after creation
+- new automatic file backup facility for an optional amount of backup copies per database. 
+  With every save operation a time-marked backup file is saved; a submenu in "Files" allows
+  user to revert to any listed backup file version
+- new commandline options "/p" for forced PORTABLE modus and "/n" for forced NORMAL modus
+  (both are exclusive to each other with /n owning priority). If /p combines with /o:<file>
+  it forces the directory of <file> to become the PORTABLE ROOT
+- improved random data pool collection (well, it was good before, but why not make it better?)
+
+- improved MERGE/IMPORT functionality allows improved source information and user choice 
+  of different conflict solving strategies
+- IMPORT CSV function allows to setup a target GROUP to contain the entire import 
+- popup context command menu for NOTES field in entry editor
+- tear-off NOTES panel in entry editor
+- optional line wrapping in NOTES field
+- NOTES may optionally be edited in a special editor tab
+- optional switch-off of minor operational changes causing file modification
+- revised program preferences 
+- some dialogs have been "liberalised" meaning they are now non-modal (New File, Import New, 
+  Open URL, System Information)
+- entry/group delete command is now available as KEYBOARD event in Tree and Table view 
+  (provided UNDO is enabled)
+- new Help texts added (entry editor, file header dialog, open URL dialog)
+- added several menu accelerator keys
+- ANT build.xml supplied
+
+- several minor changes which are not listed here
+- introduced a program variant "JPWS-deluxe" containing the additonal look-and-feels
+  Kunststoff and JGoodies.Plastic
+
+
+*** Release V 0-4-0, 06 Dec. 2006 ***
+
+CORRECTED BUGS
+- duplicated entries now show the actual time as creation time
+- improved behaviour of Idle State application frame (does not bounce back 
+  and forth any more)
+
+NEW FEATURES
+- support of PasswordSafe file format version V3.0
+  (largely improved security status, it is recommended to upgrade all user files!)
+- read and write of all older PWS format versions
+- adaptive entry editor design, depending on active file format
+- conversion of older file formats on file open (optional)
+- new data field: URL (website) reference
+- new data area: up to 255 paswword history entries, automatically created
+  when password changes
+- automated insertion of clipboard text into URL field (if suitable content)
+- new button to start URL reference in external browser (entry editor)
+- new button in list display level to start URL reference of a selected 
+  entry in external browser 
+- reorganised usage entry index: now discriminates "last used" and "last edited"
+  (very practical!)
+- new separate info dialog in Help menu: "File Information" shows various deep track 
+  information about the loaded file (live updated)
+
+
+*** Release: V 0-3-1, 28 Mar. 2006 ***
+
+CORRECTED BUGS
+- removed an incapability of PWSLIB to open original PWS files since PWS 2.14
+- check for server-news and new program versions missed reporting on "nothing new"
+
+NEW FEATURES
+- linefeeds in NOTES field now store as CRLF instead of LF to increase compatibility with
+  other applications
+
+
+*** Release V 0-3-0, 20 Mar. 2006 ***
+
+CORRECTED BUGS
+- improved stability of tree and table display
+- improved compatibility with Password Safe V2 files (corrected some confusion of 
+  group and title name when file used in PWS)
+
+NEW FEATURES
+- CSV cleartext export functionality with two format variants: DATABASE (conforms to
+  RFC-4180) and SPREADSHEET (compatible to calculation table applications); all character
+  sets of JVM choosable
+- CSV cleartext import functionality for DATABASE and SPREADSHEET formats and all
+  character sets
+- error message protocol window in CSV import funtion
+- also can import from KeePass CSV files 
+- export and import for either entire database or entry/group selection
+- help texts for CSV export and import 
+- export to encrypted file (PWS-V2) for a selection or group of entries
+- context menu in entry list browser (tree or table) with many selection oriented
+  operations
+- new versatile entry and group oriented operations to duplicate, rename, move and delete
+- automated software version check and user warning about new JPWS releases
+- automated project news-page check and user warning about unread news
+- "Secure File Wipe" function under help menu (assistory to CSV serialization)
+- database remembers "latest edited" entries, which are offered as edit options in GUI
+- database remembers recent values of the "Find" function
+- customizable fonts for 7 display categories
+- customizable GUI-style (look and feel)
+- several improvements to usability e.g. by adding combo-boxes to input fields
+- introduced auto-move dialog windows (e.g. "Find"-function)
+
+(Technical)
+- JPWS now conserves unknown fields from other applications when saving databases
+- resource loading now has two alternative locations (loads now from classpath /resource 
+  or package path org.jpws.front.resource)
+- restructuring of PwsFileContainer into two-level classes (PwsFileSocket, PwsFileConainer)
+  to improve separation of background and GUI functionality
+- new architecture of Save-As and Save-Copy to ensure proper internal IO synchronizing
+
+
+*** Release V 0-2-0, 29 Oct. 2005 ***
+
+CORRECTED BUGS
+
+- corrected an error which prevented edited entry specific password policies to be 
+  saved or reverted under some circumstance
+- corrected an error which prevented complete reversion of record time fields on 
+  cancel in entry editor
+- corrected an error which blocked off the entry editor after Edit dialog 
+  was closed by the user through "external" means (shortcut-key or close-widget)
+- corrected an error which failed to display file content after Merge function
+  when the file was empty before
+
+
+NEW FEATURES
+
+- implemented TEXT FIND function (identifies records containing a text pattern; 
+  optional "case sensitive" and "whole word" constraints)
+- added an icon to the entry edit dialog toolbar which indicates the presence and 
+  allows to edit the special password policy of the entry
+- modified the entry Editor to display all time administration data, including
+  expiry date
+- modified the entry Editor to allow the setting of the expiry field after constant
+  span values or special user entered values
+- modified the tree and table displays to show different coloring for various entry
+  categories (green: normal, yellow: imported, orange: expire-soon, red: expired)
+- added an expiry checker routine and optional message display to warn user about
+  expired or soon-to-expire password entries (open file)
+- added facilities to show blinking display elements; added blinking text and icon in 
+  entry editor to warn of password expiry
+- improved the list sorting capabilities to follow locale sensitive collation
+- added facilities to filter the displayed record list; possible filter settings are 
+  EXPIRING, IMPORTED and MODIFIED records
+- added a menu option to select all records in the viewport ("Select All")
+- added a cryptological strong random value generator to improve random password
+  generation noticeably
+- modified option storage format to a veiled form (blocking off the casual inspector)
+- reorganized and enlarged preferences dialog; added panel for "display" settings
+- added facilities to connect to a file over the Internet by supplying a URL address;
+  HTTP and other addresses can be read, FTP addresses can be read and written. 
+  (It is not possible in this release to create URL files or use them in merge or backup
+  functions.)
+- "jpws.ini" file now is ".jpws.ini" in Linux and Unix environments
+- modified view of statusline to depict 3 fields: message, document format and program 
+  activity (icon)
+- set up extra keystroke set valid for text components and dealing with clipboard actions: 
+  crtl-ins (copy), shift-del (cut), shift-ins (paste)
+- new GUI languages: Russian and French
+- program now controls Java VM version during startup sequence
+
+

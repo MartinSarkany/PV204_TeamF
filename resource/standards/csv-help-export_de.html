@@ -1,0 +1,55 @@
+<HTML>
+<HEAD>
+   <meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+</HEAD>
+<BODY>
+
+<H2><font color="#8B0000">CSV EXPORT HILFE</font></H2>
+
+<H3><font color="#005FBF">Allgemein</font></H3>
+
+CSV Export erzeugt die Textausgabe Ihrer Passwort-Einträge in einem von zwei möglichen Formaten, nämlich <b>"DATENBANK"</b> oder <b>"TABELLEN-KALKULATION"</b>. Unabhängig davon kann aus einer Vielzahl von Zeichensätzen gewählt werden, um die Textausgabe nach den Erfordernissen Ihrer Arbeitsumgebung einzurichten.
+
+<p>Siehe auch <a href="help.csvformat">JPWS CSV-Dateiformat</a>.
+
+
+<H3><font color="#005FBF">Kontrollelemente</font></H3>
+
+<table cellpadding="6">
+
+<tr><td valign="top"><b><font color="red">Quelldatei</font></b></td>
+<td>Zeigt die Datenbank an, aus der exportiert werden soll. 
+</td></tr>
+
+<tr><td valign="top"><b><font color="red">Bereich</font></b></td>
+<td>"<b><small>GANZE DATEI</small></b>" oder "<b><small>SATZ-AUSWAHL (x)</small></b>".
+<P>Zeigt an, ob die Ausgabe alle Datensätze der Datei oder eine Benutzerauswahl umfaßt. Im Fall der Benutzerauswahl wird die Anzahl der gewählten Datensätze angezeigt.
+</td></tr>
+
+<tr><td valign="top"><b><font color="red">Textformat</font></b></td>
+<td>Optionen: <small><b>DATENBANK</b></small> und <small><b>TABELLEN-KALKULATION</b></small>. 
+<P><I>JPasswords</I> implementiert RFC-4180 für die Ausgaben des "<U><B><small>DATENBANK<small></B></U>" Typs. (Dies ist die Grundlage des bei IANA registrierten <B>MIME-Typs "text/csv"</B>.) Dieses Format ist geeignet, den kompletten Datenumfang der Passwort-Einträge ohne Modifikationen darzustellen. Zeitwerte werden als "Epochen"-Sekunden (Ganzzahl) gespeichert.
+
+<P><I>JPasswords</I> implementiert eine gekürzte Inhaltsvariante mit dem Formattyp  "<U><B><small>TABELLEN-KALKULATION</small></B></U>", um einigen Anforderungen dieser Art von Anwendungen gerecht zu werden. Benutzen Sie diese Option, um Ihre Datei als Tabelle zu betrachten. Die Unterschiede sind: i) einige weniger wichtige Datenfelder sind ausgelassen (einschließlich UUID), ii) das Felder-Trennzeichen ist Strichpunkt anstatt Komma, iii) Zeitwerte werden als lesbarer Text dargestellt, und iv) Zeilenumbrüche in Datenfeldern werden in Leerzeichen übersetzt. 
+</td></tr>
+
+<tr><td valign="top"><b><font color="red">Zeichensatz</font></b></td>
+<td>Optionen: Liste der verfügbaren Zeichensätze aus Ihrer Java Virtuellen Maschine. 
+<P>Wählen Sie einen Standard, der am besten zu der Umgebung paßt, in der die Ausgabe verwendet werden soll. "<U><B>UTF-8</B></U>" ist generell eine gute Wahl für alle Sprachen und Umgebungen. Benutzer aus der Westlichen Hemisphere könnten alternativ auch  "<U><B>ISO-8859-1</B></U>" oder "<U><B>windows-1252</B></U>" wählen. 
+</td></tr>
+
+<tr><td valign="top"><b><font color="red">Ausgabedatei</font></b></td>
+<td>Benutzen Sie den Dateibrowser um die Zieldatei Ihrer CSV-Ausgabe zu bestimmen.
+</td></tr>
+</table>
+
+
+<H3><font color="#005FBF">Über CSV</font></H3>
+
+CSV wird oft als (Englisch) "comma separated values" gelesen und ist ein weit verbreitetes Textformat, um den Inhalt von Datenbanken zu transportieren oder sogar operational darzustellen. Trotz seiner Beliebtheit gibt es keine verbindliche Vorschrift für dieses Format oder die darin verwendeten Datentypen. Als Folge davon kann es zu Problemen kommen, wenn versucht wird, CSV-Dateien in anderen Anwendungen einzulesen. 
+
+<H3><font color="#005FBF">Sicherheit-Bedenken</font></H3>
+
+Die CSV-Ausgabe macht Ihre Passwörter im Klartext sichtbar und ist deshalb dem eigentlichen Ziel von <i>JPasswords</i>, Ihre Passwörter zu schützen, entgegengesetzt. Versuchen Sie soweit möglich, die Herstellung von Kopien der Ausgabedatei zu vermeiden. Selbst wenn eine Datei im Dateimanager "gelöscht" ist, sind ihre Daten weiterhin zugänglich und stellen ein Sicherheitsrisiko für Sie dar. Löschen Sie deshalb die Ausgabedatei und alle ihre Kopien sobald möglich mit dem Tool "<B>Sicheres Dateilöschen</B>", das im <i>JPasswords</i> Hilfe-Menü angeboten wird. Bei modernen SSD-Drives ist dies jedoch nutzlos und es bleibt Ihnen nur die Änderung Ihrer Passwörter!
+
+</BODY></HTML>
