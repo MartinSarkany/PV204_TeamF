@@ -1,5 +1,3 @@
 Manifest-Version: 1.0
-Main-Class: org.jpws.front.PwsafeJ
-Class-Path: 
-Created-By: Wolfgang Keller
+X-COMMENT: Main-Class will be added automatically by build
 
