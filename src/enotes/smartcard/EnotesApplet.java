@@ -13,6 +13,8 @@ public class EnotesApplet  extends javacard.framework.Applet
     final static byte INS_GEN_PUB_KEY_MOD            = (byte) 0x50;
     final static byte INS_RET_PUB_EXP                = (byte) 0x51;
     final static byte INS_GEN_SEC_KEY                = (byte) 0x52;
+    final static byte INS_SET_MOD                    = (byte) 0x53;
+    final static byte INS_SET_EXP_SEND_SEC_KEY       = (byte) 0x54;
     final static byte INS_VERIFYPIN                  = (byte) 0x55;
     final static byte INS_CHANGEPIN                  = (byte) 0x56;
     
@@ -27,7 +29,6 @@ public class EnotesApplet  extends javacard.framework.Applet
     private   AESKey         m_aesKey = null;
     private   RandomData     m_secureRandom = null;
     private   OwnerPIN       m_pin = null;
-    private   Signature      m_sign = null;
     private   KeyPair        m_keyPair = null;
     private   RSAPrivateKey  m_privateKey = null;
     private   RSAPublicKey   m_publicKey = null;
@@ -96,6 +97,9 @@ public class EnotesApplet  extends javacard.framework.Applet
             {
                 case INS_GEN_PUB_KEY_MOD: genKeypairAndReturnModulus(apdu); break;
                 case INS_RET_PUB_EXP: returnPubExponent(apdu); break;
+                case INS_GEN_SEC_KEY: generateSecretKey(); break;
+                case INS_SET_MOD: setModulus(apdu); break;
+                case INS_SET_EXP_SEND_SEC_KEY: setExponentAndReturnEncryptedKey(apdu); break;
                 case INS_CHANGEPIN: changePIN(apdu); break;
                 case INS_VERIFYPIN: verifyPIN(apdu); break;
                 default :
@@ -157,20 +161,30 @@ public class EnotesApplet  extends javacard.framework.Applet
         byte[] apdubuf = apdu.getBuffer();        
         short  dataLen = apdu.setIncomingAndReceive();
         
+        if(!m_pin.isValidated())
+            ISOException.throwIt(PIN_REQUIRED);
+        
+        //if not the right length
         if(dataLen != 128)
             ISOException.throwIt(ISO7816.SW_WRONG_LENGTH);
         
         m_publicKey.setExponent(apdubuf, ISO7816.OFFSET_CDATA, dataLen);        
     }
     
-    void setExponentInitCipherEncryptSecretKeyByPublicKeyReturnSecretKeyToJavaCardAndAddSomeMeaninglessWordsToMakeThisEvenLonger(APDU apdu)
+    void setExponentAndReturnEncryptedKey(APDU apdu)
     {
         byte[] apdubuf = apdu.getBuffer();        
         short  dataLen = apdu.setIncomingAndReceive();
         short encryptedLen;
         
-        //maybe condition "if modulus is not set ..."
+        if(!m_pin.isValidated())
+            ISOException.throwIt(PIN_REQUIRED);
         
+        //if modulus is not set
+        if(m_publicKey.getModulus(m_ramArray,(short) 0) == 0)
+            ISOException.throwIt(ISO7816.SW_CONDITIONS_NOT_SATISFIED);
+        
+        //if not the right length
         if(dataLen != 128)
             ISOException.throwIt(ISO7816.SW_WRONG_LENGTH);
         
