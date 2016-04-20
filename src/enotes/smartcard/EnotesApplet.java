@@ -36,7 +36,7 @@ public class EnotesApplet  extends javacard.framework.Applet
     // TEMPORARRY ARRAY IN RAM
     private byte  m_ramArray[] = null;
     
-    //indicates whether aes key was generated
+    //indicates whether secret key was generated
     private boolean m_SecretKeyIsSet = false;
 
     protected EnotesApplet(byte[] buffer, short offset, byte length) 
@@ -152,18 +152,42 @@ public class EnotesApplet  extends javacard.framework.Applet
         apdu.setOutgoingAndSend(ISO7816.OFFSET_CDATA, (short) 128);
     }
     
-    void extractPubKeyMod()
+    void setModulus(APDU apdu)
     {
+        byte[] apdubuf = apdu.getBuffer();        
+        short  dataLen = apdu.setIncomingAndReceive();
         
+        if(dataLen != 128)
+            ISOException.throwIt(ISO7816.SW_WRONG_LENGTH);
+        
+        m_publicKey.setExponent(apdubuf, ISO7816.OFFSET_CDATA, dataLen);        
     }
     
-    void extractPubKeyExp()
+    void setExponentInitCipherEncryptSecretKeyByPublicKeyReturnSecretKeyToJavaCardAndAddSomeMeaninglessWordsToMakeThisEvenLonger(APDU apdu)
     {
+        byte[] apdubuf = apdu.getBuffer();        
+        short  dataLen = apdu.setIncomingAndReceive();
+        short encryptedLen;
         
+        //maybe condition "if modulus is not set ..."
+        
+        if(dataLen != 128)
+            ISOException.throwIt(ISO7816.SW_WRONG_LENGTH);
+        
+        //set public key exponent (modulus is already set)
+        m_publicKey.setExponent(apdubuf, ISO7816.OFFSET_CDATA, dataLen);
+        //init cipher object with public key
+        m_rsaCipher.init(m_publicKey, Cipher.MODE_ENCRYPT);
+        //copy secret key from AES object to RAM array
+        m_aesKey.getKey(m_ramArray, (short) 0);
+        //encrypt secret key by public key, store result in APDU buffer
+        encryptedLen = m_rsaCipher.doFinal(m_ramArray, (short) 0, (short)128, apdubuf, ISO7816.OFFSET_CDATA);
+        
+        apdu.setOutgoingAndSend(ISO7816.OFFSET_CDATA, encryptedLen);        
     }
     
     
-    void encryptSecretKey(APDU apdu)
+    /*void encryptSecretKey(APDU apdu)
     {
         byte[]    apdubuf = apdu.getBuffer();
         short     dataLen = apdu.setIncomingAndReceive();
@@ -171,7 +195,7 @@ public class EnotesApplet  extends javacard.framework.Applet
         //extract pub exp
         
         apdu.setOutgoingAndSend(ISO7816.OFFSET_CDATA, dataLen);
-    }
+    }*/
 
     void decryptPIN(byte[] apdubuf, short dataLen)
     {
