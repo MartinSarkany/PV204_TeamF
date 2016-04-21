@@ -1,7 +1,14 @@
 package enotes.smartcard;
 
 import enotes.smartcard.applet.EnotesApplet;
+import java.math.BigInteger;
+import java.security.Key;
+import java.security.KeyFactory;
+import java.security.spec.RSAPublicKeySpec;
 import javacard.framework.Util;
+import javacard.security.PublicKey;
+import javacard.security.RSAPublicKey;
+import javax.crypto.Cipher;
 import javax.smartcardio.ResponseAPDU;
 
 /**
@@ -63,9 +70,9 @@ public class CardCommunication {
         return true;
     }
 
-    // Generates a keypair on the card and returns the modulus and exponent of the public key
-    private boolean generateKeyPair() {
-        
+    // Generates a keypair on the card and returns the public key
+    private PublicKey generateKeyPair() {
+
         byte apdu[] = new byte[CardMngr.HEADER_LENGTH];
         apdu[CardMngr.OFFSET_CLA] = (byte) 0xB0;
         apdu[CardMngr.OFFSET_INS] = INS_GEN_PUB_KEY_MOD;
@@ -74,16 +81,78 @@ public class CardCommunication {
         apdu[CardMngr.OFFSET_LC] = (byte) 0;
 
         byte response[];
+        byte modulus[];
+        byte exponent[];
+        PublicKey publicKey;
         try {
             response = cardManager.sendAPDU(apdu).getBytes();
-            if (response[response.length-2] != (byte) 0x90 || response[response.length-1] != (byte) 0x00) {
-                // to do: save modulus to key object and later get exponent and set to key object and return key object to caller
+            if (response[response.length - 2] != (byte) 0x90 || response[response.length - 1] != (byte) 0x00) {
+                return null;
             }
+            modulus = new byte[response.length - 2];
+            System.arraycopy(response, 0, modulus, 0, response.length - 2);
+
+            apdu[CardMngr.OFFSET_INS] = INS_RET_PUB_EXP;
+            response = cardManager.sendAPDU(apdu).getBytes();
+            if (response[response.length - 2] != (byte) 0x90 || response[response.length - 1] != (byte) 0x00) {
+                return null;
+            }
+
+            exponent = new byte[response.length - 2];
+            System.arraycopy(response, 0, exponent, 0, response.length - 2);
+
+            // set modulus and exponent to new public key object
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            RSAPublicKeySpec pubKeySpec = new RSAPublicKeySpec(new BigInteger(modulus), new BigInteger(exponent)); 
+            publicKey = (PublicKey) keyFactory.generatePublic(pubKeySpec);
+        } catch (Exception ex) {
+            // For debugging print out exception
+            System.out.println("Exception: " + ex.getMessage());
+            return null;
+        }
+        return publicKey;
+    }
+    
+    public boolean verifyPIN(byte pin[]) {
+        // todo: get public key, encrypt PIN, send to card for verification
+        
+        PublicKey publicKey = generateKeyPair();
+        byte encryptedPin[];
+        if (publicKey == null) {
+            // For debugging
+            System.out.println("Public key is null");
+            return false;
+        }
+        try {
+            Cipher cipher = Cipher.getInstance("RSA/None/PKCS1Padding", "BC");
+            cipher.init(Cipher.ENCRYPT_MODE, (Key) publicKey);
+            
+            encryptedPin = cipher.doFinal(pin);
         } catch (Exception ex) {
             // For debugging print out exception
             System.out.println("Exception: " + ex.getMessage());
             return false;
         }
+        
+        byte apdu[] = new byte[CardMngr.HEADER_LENGTH + encryptedPin.length];
+        apdu[CardMngr.OFFSET_CLA] = (byte) 0xB0;
+        apdu[CardMngr.OFFSET_INS] = INS_VERIFYPIN;
+        apdu[CardMngr.OFFSET_P1] = (byte) 0x00;
+        apdu[CardMngr.OFFSET_P2] = (byte) 0x00;
+        apdu[CardMngr.OFFSET_LC] = (byte) encryptedPin.length;
+
+        System.arraycopy(pin, 0, apdu, CardMngr.OFFSET_DATA, encryptedPin.length);
+        byte response[];
+        try {
+            response = cardManager.sendAPDU(apdu).getBytes();
+            if (response[response.length - 2] != (byte) 0x90 || response[response.length - 1] != (byte) 0x00) {
+                return false;
+            }
+        } catch (Exception ex) {
+            // For debugging print out exception
+            System.out.println("Exception: " + ex.getMessage());
+            return false;
+        } 
         return true;
     }
 }
