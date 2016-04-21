@@ -26,9 +26,9 @@ public class CardCommunication {
         (byte) 0x73, (byte) 0x20, (byte) 0x61, (byte) 0x70, (byte) 0x70,
         (byte) 0x6c, (byte) 0x65, (byte) 0x74};
 
-    public boolean connectToCard()throws Exception{
+    public boolean connectToCard() {
         try {
-            if( !cardManager.ConnectToCard()){
+            if (!cardManager.ConnectToCard()) {
                 return false;
             }
             cardManager.sendAPDU(SELECT_ENOTESAPPLET);
@@ -37,7 +37,53 @@ public class CardCommunication {
             System.out.println("Exception: " + ex.getMessage());
             return false;
         }
-   
+
+        return true;
+    }
+
+    public boolean generateSecretKey() {
+        byte apdu[] = new byte[CardMngr.HEADER_LENGTH];
+        apdu[CardMngr.OFFSET_CLA] = (byte) 0xB0;
+        apdu[CardMngr.OFFSET_INS] = INS_GEN_SEC_KEY;
+        apdu[CardMngr.OFFSET_P1] = (byte) 0x00;
+        apdu[CardMngr.OFFSET_P2] = (byte) 0x00;
+        apdu[CardMngr.OFFSET_LC] = (byte) 0;
+
+        byte response[];
+        try {
+            response = cardManager.sendAPDU(apdu).getBytes();
+            if (response[0] != (byte) 0x90 || response[1] != (byte) 0x00) {
+                return false;
+            }
+        } catch (Exception ex) {
+            // For debugging print out exception
+            System.out.println("Exception: " + ex.getMessage());
+            return false;
+        }
+        return true;
+    }
+
+    // Generates a keypair on the card and returns the modulus and exponent of the public key
+    private boolean generateKeyPair() {
+        
+        byte apdu[] = new byte[CardMngr.HEADER_LENGTH];
+        apdu[CardMngr.OFFSET_CLA] = (byte) 0xB0;
+        apdu[CardMngr.OFFSET_INS] = INS_GEN_PUB_KEY_MOD;
+        apdu[CardMngr.OFFSET_P1] = (byte) 0x00;
+        apdu[CardMngr.OFFSET_P2] = (byte) 0x00;
+        apdu[CardMngr.OFFSET_LC] = (byte) 0;
+
+        byte response[];
+        try {
+            response = cardManager.sendAPDU(apdu).getBytes();
+            if (response[response.length-2] != (byte) 0x90 || response[response.length-1] != (byte) 0x00) {
+                // to do: save modulus to key object and later get exponent and set to key object and return key object to caller
+            }
+        } catch (Exception ex) {
+            // For debugging print out exception
+            System.out.println("Exception: " + ex.getMessage());
+            return false;
+        }
         return true;
     }
 }
