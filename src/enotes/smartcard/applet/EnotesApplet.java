@@ -1,4 +1,4 @@
-package enotes.smartcard;
+package enotes.smartcard.applet;
 
 import javacard.framework.*;
 import javacard.security.*;
@@ -7,7 +7,7 @@ import javacardx.crypto.*;
 public class EnotesApplet  extends javacard.framework.Applet
 {
     // MAIN INSTRUCTION CLASS
-    final static byte CLA_SIMPLEAPPLET                = (byte) 0xB0;
+    final static byte CLA_ENOTESAPPLET                = (byte) 0xB0;
 
     // INSTRUCTIONS
     final static byte INS_GEN_PUB_KEY_MOD            = (byte) 0x50;
@@ -92,7 +92,7 @@ public class EnotesApplet  extends javacard.framework.Applet
             return;
 
         // APDU instruction parser
-        if (apduBuffer[ISO7816.OFFSET_CLA] == CLA_SIMPLEAPPLET) {
+        if (apduBuffer[ISO7816.OFFSET_CLA] == CLA_ENOTESAPPLET) {
             switch ( apduBuffer[ISO7816.OFFSET_INS] )
             {
                 case INS_GEN_PUB_KEY_MOD: genKeypairAndReturnModulus(apdu); break;
@@ -106,7 +106,6 @@ public class EnotesApplet  extends javacard.framework.Applet
                     // The INS code is not supported by the dispatcher
                     ISOException.throwIt( ISO7816.SW_INS_NOT_SUPPORTED ) ;
                 break ;
-
             }
         }
         else ISOException.throwIt( ISO7816.SW_CLA_NOT_SUPPORTED);
