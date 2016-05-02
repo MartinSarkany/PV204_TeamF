@@ -30,7 +30,7 @@ public class EnotesApplet  extends javacard.framework.Applet
     private   RandomData    m_secureRandom = null;
     private   OwnerPIN      m_pin = null;
     private   KeyPair       m_keyPair = null;
-    private   PrivateKey    m_privateKey = null;
+    private   RSAPrivateKey m_privateKey = null;
     private   RSAPublicKey  m_publicKey = null;
     private   Cipher        m_rsaCipher = null;
 
@@ -58,7 +58,7 @@ public class EnotesApplet  extends javacard.framework.Applet
             m_pin.update(m_ramArray, (byte) 0, (byte) 4);
 
             // CREATE RSA KEYS AND PAIR
-            m_keyPair = new KeyPair(KeyPair.ALG_RSA_CRT, KeyBuilder.LENGTH_RSA_1024);
+            m_keyPair = new KeyPair(KeyPair.ALG_RSA, KeyBuilder.LENGTH_RSA_1024);
             m_rsaCipher = Cipher.getInstance(Cipher.ALG_RSA_PKCS1, false);
            
         }
@@ -115,11 +115,8 @@ public class EnotesApplet  extends javacard.framework.Applet
     {
         m_rsaCipher.init(m_privateKey, Cipher.MODE_DECRYPT);
         m_rsaCipher.doFinal(apdubuf, ISO7816.OFFSET_CDATA, dataLen, m_ramArray, (short) 0);
-        ISOException.throwIt((byte) 2);
         m_privateKey.clearKey();
-        ISOException.throwIt((byte) 3);
         m_publicKey.clearKey();
-        ISOException.throwIt((byte) 4);
     }
     
     void verifyPIN(APDU apdu) 
@@ -128,6 +125,7 @@ public class EnotesApplet  extends javacard.framework.Applet
         short     dataLen = apdu.setIncomingAndReceive();     
         
         decryptPIN(apdubuf, dataLen);
+        //apdu.setOutgoingAndSend((short)0, (short) 4);
         
         if(m_pin.getTriesRemaining() == 0)
             ISOException.throwIt(ISO7816.SW_COMMAND_NOT_ALLOWED);
@@ -151,19 +149,19 @@ public class EnotesApplet  extends javacard.framework.Applet
     void genKeypairAndReturnModulus(APDU apdu)
     {
         m_keyPair.genKeyPair();
-        m_privateKey = m_keyPair.getPrivate();
+        m_privateKey = (RSAPrivateKey)m_keyPair.getPrivate();
         /*m_sign = Signature.getInstance(Signature.ALG_RSA_SHA_PKCS1, false);
         m_sign.init(m_privateKey, Signature.MODE_SIGN);*/
         
         m_publicKey = (RSAPublicKey)m_keyPair.getPublic();
-        m_publicKey.getModulus(apdu.getBuffer(), ISO7816.OFFSET_CDATA);
+        short modLen = m_publicKey.getModulus(apdu.getBuffer(), ISO7816.OFFSET_CDATA);
         
-        apdu.setOutgoingAndSend(ISO7816.OFFSET_CDATA, (short) 128);
+        apdu.setOutgoingAndSend(ISO7816.OFFSET_CDATA, modLen);
     }
     
     void returnPubExponent(APDU apdu){
-        m_publicKey.getExponent(apdu.getBuffer(), ISO7816.OFFSET_CDATA);
-        apdu.setOutgoingAndSend(ISO7816.OFFSET_CDATA, (short) 128);
+        short expLen = m_publicKey.getExponent(apdu.getBuffer(), ISO7816.OFFSET_CDATA);
+        apdu.setOutgoingAndSend(ISO7816.OFFSET_CDATA, expLen);
     }
     
     void setModulus(APDU apdu)

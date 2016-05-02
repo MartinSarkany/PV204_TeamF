@@ -229,21 +229,23 @@ public class CardCommunication {
             System.out.println("Exception: " + ex.getMessage());
             return null;
         }
-        keyGen.initialize(128);
+        keyGen.initialize(1024);
         KeyPair keyPair = keyGen.genKeyPair();
         RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
         //byte[] modBytes = new byte[1024];
         //publicKey.getModulus(modBytes, (short) 0);
         byte[] modBytes = publicKey.getModulus().toByteArray();
         
-        byte apdu[] = new byte[CardMngr.HEADER_LENGTH + modBytes.length];
+        //for some reason, modBytes has 129 bytes but first one is 0
+        byte apdu[] = new byte[CardMngr.HEADER_LENGTH + modBytes.length-1];
         apdu[CardMngr.OFFSET_CLA] = (byte) 0xB0;
         apdu[CardMngr.OFFSET_INS] = INS_SET_MOD;
         apdu[CardMngr.OFFSET_P1] = (byte) 0x00;
         apdu[CardMngr.OFFSET_P2] = (byte) 0x00;
-        apdu[CardMngr.OFFSET_LC] = (byte) modBytes.length;
+        //apdu[CardMngr.OFFSET_LC] = (byte) modBytes.length;
+        apdu[CardMngr.OFFSET_LC] = (byte) 128;  //it shouldn't be like this but java is so annoying..
 
-        System.arraycopy(modBytes, 0, apdu, CardMngr.OFFSET_DATA, modBytes.length);
+        System.arraycopy(modBytes, 1, apdu, CardMngr.OFFSET_DATA, modBytes.length -1);
         byte response[];
         try {
             response = cardManager.sendAPDU(apdu).getBytes();
@@ -257,7 +259,8 @@ public class CardCommunication {
         }
         
         
-        byte expBytes[] = new byte[128];
+        byte[] expBytes = publicKey.getPublicExponent().toByteArray();
+        System.out.println(expBytes.length);
         apdu[CardMngr.OFFSET_INS] = INS_SET_EXP_SEND_SEC_KEY;
         apdu[CardMngr.OFFSET_LC] = (byte) expBytes.length;
         System.arraycopy(expBytes, 0, apdu, CardMngr.OFFSET_DATA, expBytes.length);
