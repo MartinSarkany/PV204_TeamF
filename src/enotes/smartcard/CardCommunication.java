@@ -7,15 +7,14 @@ import java.security.Key;
 import java.security.KeyFactory;
 import java.security.KeyPairGenerator;
 import java.security.spec.RSAPublicKeySpec;
-import javacard.framework.Util;         //javacard?
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.security.PublicKey;     //javacard?
-import javacard.security.RSAPublicKey;  //javacard?
+import java.security.PublicKey;
+import java.security.interfaces.RSAPublicKey;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -115,8 +114,8 @@ public class CardCommunication {
 
             // set modulus and exponent to new public key object
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-            RSAPublicKeySpec pubKeySpec = new RSAPublicKeySpec(new BigInteger(modulus), new BigInteger(exponent)); 
-            publicKey = (PublicKey) keyFactory.generatePublic(pubKeySpec);
+            RSAPublicKeySpec pubKeySpec = new RSAPublicKeySpec(new BigInteger(1, modulus), new BigInteger(1, exponent)); 
+            publicKey = keyFactory.generatePublic(pubKeySpec);
         } catch (Exception ex) {
             // For debugging print out exception
             System.out.println("Exception: " + ex.getMessage());
@@ -173,7 +172,7 @@ public class CardCommunication {
     public static boolean doStuffWithPIN(byte pin[], byte whatToDo) {
         // todo: get public key, encrypt PIN, send to card for verification
         
-        PublicKey publicKey = generateKeyPair();
+        RSAPublicKey publicKey = (RSAPublicKey) generateKeyPair();
         byte encryptedPin[];
         if (publicKey == null) {
             // For debugging
@@ -182,8 +181,7 @@ public class CardCommunication {
         }
         try {
             Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding"/*, "BC"*/);  //not sure about BC here - bouncy castle? do we use this?
-            cipher.init(Cipher.ENCRYPT_MODE, (Key) publicKey);
-            
+            cipher.init(Cipher.ENCRYPT_MODE, publicKey);
             encryptedPin = cipher.doFinal(pin);
         } catch (Exception ex) {
             // For debugging print out exception
@@ -198,7 +196,7 @@ public class CardCommunication {
         apdu[CardMngr.OFFSET_P2] = (byte) 0x00;
         apdu[CardMngr.OFFSET_LC] = (byte) encryptedPin.length;
 
-        System.arraycopy(pin, 0, apdu, CardMngr.OFFSET_DATA, encryptedPin.length);
+        System.arraycopy(encryptedPin, 0, apdu, CardMngr.OFFSET_DATA, encryptedPin.length);
         byte response[];
         try {
             response = cardManager.sendAPDU(apdu).getBytes();
@@ -234,8 +232,9 @@ public class CardCommunication {
         keyGen.initialize(128);
         KeyPair keyPair = keyGen.genKeyPair();
         RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
-        byte[] modBytes = new byte[1024];
-        publicKey.getModulus(modBytes, (short) 0);
+        //byte[] modBytes = new byte[1024];
+        //publicKey.getModulus(modBytes, (short) 0);
+        byte[] modBytes = publicKey.getModulus().toByteArray();
         
         byte apdu[] = new byte[CardMngr.HEADER_LENGTH + modBytes.length];
         apdu[CardMngr.OFFSET_CLA] = (byte) 0xB0;
