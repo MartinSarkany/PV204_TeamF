@@ -14,7 +14,7 @@ import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javacard.security.PublicKey;     //javacard?
+import java.security.PublicKey;     //javacard?
 import javacard.security.RSAPublicKey;  //javacard?
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -42,9 +42,9 @@ public class CardCommunication {
     private static byte SELECT_ENOTESAPPLET[] = {(byte) 0x00, (byte) 0xa4, (byte) 0x04, (byte) 0x00, (byte) 0x0b,
         (byte) 0x65, (byte) 0x6e, (byte) 0x6f, (byte) 0x74, (byte) 0x65,
         (byte) 0x73, (byte) 0x20, (byte) 0x61, (byte) 0x70, (byte) 0x70,
-        (byte) 0x6c, (byte) 0x65, (byte) 0x74};
+        (byte) 0x6c/*, (byte) 0x65, (byte) 0x74*/};
 
-    public boolean connectToCard() {
+    public static boolean connectToCard() {
         try {
             if (!cardManager.ConnectToCard()) {
                 return false;
@@ -59,7 +59,7 @@ public class CardCommunication {
         return true;
     }
 
-    public boolean generateSecretKey() {
+    public static boolean generateSecretKey() {
         byte apdu[] = new byte[CardMngr.HEADER_LENGTH];
         apdu[CardMngr.OFFSET_CLA] = (byte) 0xB0;
         apdu[CardMngr.OFFSET_INS] = INS_GEN_SEC_KEY;
@@ -82,7 +82,7 @@ public class CardCommunication {
     }
 
     // Generates a keypair on the card and returns the public key
-    private PublicKey generateKeyPair() {
+    private static PublicKey generateKeyPair() {
 
         byte apdu[] = new byte[CardMngr.HEADER_LENGTH];
         apdu[CardMngr.OFFSET_CLA] = (byte) 0xB0;
@@ -96,7 +96,8 @@ public class CardCommunication {
         byte exponent[];
         PublicKey publicKey;
         try {
-            response = cardManager.sendAPDU(apdu).getBytes();
+            ResponseAPDU respAPDU = cardManager.sendAPDU(apdu);
+            response = respAPDU.getBytes();
             if (response[response.length - 2] != (byte) 0x90 || response[response.length - 1] != (byte) 0x00) {
                 return null;
             }
@@ -124,52 +125,52 @@ public class CardCommunication {
         return publicKey;
     }
     
-    public boolean verifyPIN(byte pin[]) {
-        // todo: get public key, encrypt PIN, send to card for verification
-        
-        PublicKey publicKey = generateKeyPair();
-        byte encryptedPin[];
-        if (publicKey == null) {
-            // For debugging
-            System.out.println("Public key is null");
-            return false;
-        }
-        try {
-            Cipher cipher = Cipher.getInstance("RSA/None/PKCS1Padding", "BC");
-            cipher.init(Cipher.ENCRYPT_MODE, (Key) publicKey);
-            
-            encryptedPin = cipher.doFinal(pin);
-        } catch (Exception ex) {
-            // For debugging print out exception
-            System.out.println("Exception: " + ex.getMessage());
-            return false;
-        }
-        
-        byte apdu[] = new byte[CardMngr.HEADER_LENGTH + encryptedPin.length];
-        apdu[CardMngr.OFFSET_CLA] = (byte) 0xB0;
-        apdu[CardMngr.OFFSET_INS] = INS_VERIFYPIN;
-        apdu[CardMngr.OFFSET_P1] = (byte) 0x00;
-        apdu[CardMngr.OFFSET_P2] = (byte) 0x00;
-        apdu[CardMngr.OFFSET_LC] = (byte) encryptedPin.length;
-
-        System.arraycopy(pin, 0, apdu, CardMngr.OFFSET_DATA, encryptedPin.length);
-        byte response[];
-        try {
-            response = cardManager.sendAPDU(apdu).getBytes();
-            if (response[response.length - 2] != (byte) 0x90 || response[response.length - 1] != (byte) 0x00) {
-                return false;
-            }
-        } catch (Exception ex) {
-            // For debugging print out exception
-            System.out.println("Exception: " + ex.getMessage());
-            return false;
-        } 
-        return true;
-    }
+//    public static boolean verifyPIN(byte pin[]) {
+//        // todo: get public key, encrypt PIN, send to card for verification
+//        
+//        PublicKey publicKey = generateKeyPair();
+//        byte encryptedPin[];
+//        if (publicKey == null) {
+//            // For debugging
+//            System.out.println("Public key is null");
+//            return false;
+//        }
+//        try {
+//            Cipher cipher = Cipher.getInstance("RSA/None/PKCS1Padding", "BC");
+//            cipher.init(Cipher.ENCRYPT_MODE, (Key) publicKey);
+//            
+//            encryptedPin = cipher.doFinal(pin);
+//        } catch (Exception ex) {
+//            // For debugging print out exception
+//            System.out.println("Exception: " + ex.getMessage());
+//            return false;
+//        }
+//        
+//        byte apdu[] = new byte[CardMngr.HEADER_LENGTH + encryptedPin.length];
+//        apdu[CardMngr.OFFSET_CLA] = (byte) 0xB0;
+//        apdu[CardMngr.OFFSET_INS] = INS_VERIFYPIN;
+//        apdu[CardMngr.OFFSET_P1] = (byte) 0x00;
+//        apdu[CardMngr.OFFSET_P2] = (byte) 0x00;
+//        apdu[CardMngr.OFFSET_LC] = (byte) encryptedPin.length;
+//
+//        System.arraycopy(pin, 0, apdu, CardMngr.OFFSET_DATA, encryptedPin.length);
+//        byte response[];
+//        try {
+//            response = cardManager.sendAPDU(apdu).getBytes();
+//            if (response[response.length - 2] != (byte) 0x90 || response[response.length - 1] != (byte) 0x00) {
+//                return false;
+//            }
+//        } catch (Exception ex) {
+//            // For debugging print out exception
+//            System.out.println("Exception: " + ex.getMessage());
+//            return false;
+//        } 
+//        return true;
+//    }
         
     
     //whatToDo: INS_VERIFYPIN to verify PIN or INS_CHANGEPIN to change PIN
-    public boolean doStuffWithPIN(byte pin[], byte whatToDo) {
+    public static boolean doStuffWithPIN(byte pin[], byte whatToDo) {
         // todo: get public key, encrypt PIN, send to card for verification
         
         PublicKey publicKey = generateKeyPair();
@@ -180,7 +181,7 @@ public class CardCommunication {
             return false;
         }
         try {
-            Cipher cipher = Cipher.getInstance("RSA/None/PKCS1Padding"/*, "BC"*/);  //not sure about BC here - bouncy castle? do we use this?
+            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding"/*, "BC"*/);  //not sure about BC here - bouncy castle? do we use this?
             cipher.init(Cipher.ENCRYPT_MODE, (Key) publicKey);
             
             encryptedPin = cipher.doFinal(pin);
@@ -212,16 +213,16 @@ public class CardCommunication {
         return true;
     }
     
-     public boolean changePIN(byte pin[]) {
+     public static boolean changePIN(byte pin[]) {
          return doStuffWithPIN(pin, INS_CHANGEPIN);
      }
      
     //use this instead of original verifyPIN to reduce code 
-    /*public boolean verifyPIN(byte pin[]) {
+    public static boolean verifyPIN(byte pin[]) {
         return doStuffWithPIN(pin, INS_VERIFYPIN);
-    }*/
+    }
   
-    public byte[] getSecretKey(){
+    public static byte[] getSecretKey(){
         KeyPairGenerator keyGen;
         try {
             keyGen = KeyPairGenerator.getInstance("RSA");
