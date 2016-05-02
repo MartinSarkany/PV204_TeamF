@@ -26,13 +26,13 @@ public class EnotesApplet  extends javacard.framework.Applet
     final static short PIN_REQUIRED                  = (short) 0x6982;
     final static short WRONG_P1P2                    = (short) 0x6B00;
 
-    private   AESKey         m_aesKey = null;
-    private   RandomData     m_secureRandom = null;
-    private   OwnerPIN       m_pin = null;
-    private   KeyPair        m_keyPair = null;
-    private   PrivateKey  m_privateKey = null;
-    private   RSAPublicKey   m_publicKey = null;
-    private   Cipher         m_rsaCipher = null;
+    private   AESKey        m_aesKey = null;
+    private   RandomData    m_secureRandom = null;
+    private   OwnerPIN      m_pin = null;
+    private   KeyPair       m_keyPair = null;
+    private   PrivateKey    m_privateKey = null;
+    private   RSAPublicKey  m_publicKey = null;
+    private   Cipher        m_rsaCipher = null;
 
     // TEMPORARRY ARRAY IN RAM
     private byte  m_ramArray[] = null;
@@ -111,6 +111,17 @@ public class EnotesApplet  extends javacard.framework.Applet
         else ISOException.throwIt( ISO7816.SW_CLA_NOT_SUPPORTED);
     }
 
+    void decryptPIN(byte[] apdubuf, short dataLen)
+    {
+        m_rsaCipher.init(m_privateKey, Cipher.MODE_DECRYPT);
+        m_rsaCipher.doFinal(apdubuf, ISO7816.OFFSET_CDATA, dataLen, m_ramArray, (short) 0);
+        ISOException.throwIt((byte) 2);
+        m_privateKey.clearKey();
+        ISOException.throwIt((byte) 3);
+        m_publicKey.clearKey();
+        ISOException.throwIt((byte) 4);
+    }
+    
     void verifyPIN(APDU apdu) 
     {
         byte[]    apdubuf = apdu.getBuffer();
@@ -145,9 +156,7 @@ public class EnotesApplet  extends javacard.framework.Applet
         m_sign.init(m_privateKey, Signature.MODE_SIGN);*/
         
         m_publicKey = (RSAPublicKey)m_keyPair.getPublic();
-//        ISOException.throwIt((byte) 4);
         m_publicKey.getModulus(apdu.getBuffer(), ISO7816.OFFSET_CDATA);
-//        ISOException.throwIt((byte) 5);
         
         apdu.setOutgoingAndSend(ISO7816.OFFSET_CDATA, (short) 128);
     }
@@ -216,29 +225,16 @@ public class EnotesApplet  extends javacard.framework.Applet
         apdu.setOutgoingAndSend(ISO7816.OFFSET_CDATA, dataLen);
     }*/
 
-    void decryptPIN(byte[] apdubuf, short dataLen)
-    {
-        m_rsaCipher.init(m_privateKey, Cipher.MODE_DECRYPT);
-        m_rsaCipher.doFinal(apdubuf, ISO7816.OFFSET_CDATA, dataLen, m_ramArray, (short) 0);
-        m_privateKey.clearKey();
-        m_publicKey.clearKey();
-    }
-    
     void generateSecretKey(){
-        ISOException.throwIt((byte) 1);
         if(m_secretKeyIsSet)
             ISOException.throwIt(ISO7816.SW_COMMAND_NOT_ALLOWED);
         if(!m_pin.isValidated())
             ISOException.throwIt(PIN_REQUIRED);
                 
-        ISOException.throwIt((byte) 2);
         //generate crypt. secure random data
         m_secureRandom.generateData(m_ramArray, (short) 0, KeyBuilder.LENGTH_AES_128);
-        ISOException.throwIt((byte) 3);
         m_aesKey.setKey(m_ramArray, (short) 0);
-        ISOException.throwIt((byte) 4);
         m_secretKeyIsSet = true;
-        ISOException.throwIt((byte) 5);
     }
     
   
