@@ -1,10 +1,11 @@
 package enotes.smartcard.test;
 
 import enotes.smartcard.CardCommunication;
+import java.security.Security;
+import java.util.Arrays;
 
 public class CardCommunicationTest {
     public static void main(String[] args){
-        CardCommunication cardcomm = new CardCommunication();
         if(CardCommunication.connectToCard())
             println("Conected");
         else
@@ -15,6 +16,16 @@ public class CardCommunicationTest {
         }else{
             System.out.println("PIN not verified");
         }
+        
+        println("Obtain secret key 2 times and compare if they are equal:");
+        byte[] secKey = CardCommunication.getSecretKey();
+        byte[] secKey2 = CardCommunication.getSecretKey();
+        if(Arrays.equals(secKey, secKey2))
+            println("Great, they are equal!");
+        else
+            println("Damn, they are not equal");
+        
+        
     }
     
     
