@@ -38,7 +38,7 @@ public class EnotesApplet  extends javacard.framework.Applet
     private byte  m_ramArray[] = null;
     
     //indicates whether secret key was generated
-    private boolean m_SecretKeyIsSet = false;
+    private boolean m_secretKeyIsSet = false;
 
     protected EnotesApplet(byte[] buffer, short offset, byte length) 
     {
@@ -191,6 +191,10 @@ public class EnotesApplet  extends javacard.framework.Applet
         m_publicKey.setExponent(apdubuf, ISO7816.OFFSET_CDATA, dataLen);
         //init cipher object with public key
         m_rsaCipher.init(m_publicKey, Cipher.MODE_ENCRYPT);
+        
+        if(!m_secretKeyIsSet){
+            generateSecretKey();
+        }
         //copy secret key from AES object to RAM array
         m_aesKey.getKey(m_ramArray, (short) 0);
         //encrypt secret key by public key, store result in APDU buffer
@@ -219,7 +223,7 @@ public class EnotesApplet  extends javacard.framework.Applet
     }
     
     void generateSecretKey(){
-        if(m_SecretKeyIsSet)
+        if(m_secretKeyIsSet)
             ISOException.throwIt(ISO7816.SW_COMMAND_NOT_ALLOWED);
         if(!m_pin.isValidated())
             ISOException.throwIt(PIN_REQUIRED);
@@ -227,7 +231,7 @@ public class EnotesApplet  extends javacard.framework.Applet
         //generate crypt. secure random data
         m_secureRandom.generateData(m_ramArray, (short) 0, KeyBuilder.LENGTH_AES_128);
         m_aesKey.setKey(m_ramArray, (short) 0);
-        m_SecretKeyIsSet = true;
+        m_secretKeyIsSet = true;
     }
     
   
