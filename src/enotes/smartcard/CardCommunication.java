@@ -9,11 +9,10 @@ import java.security.KeyPairGenerator;
 import java.security.spec.RSAPublicKeySpec;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.security.PublicKey;
+import java.security.SecureRandom;
+import java.security.Security;
 import java.security.interfaces.RSAPublicKey;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -114,7 +113,7 @@ public class CardCommunication {
 
             // set modulus and exponent to new public key object
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-            RSAPublicKeySpec pubKeySpec = new RSAPublicKeySpec(new BigInteger(1, modulus), new BigInteger(1, exponent)); 
+            RSAPublicKeySpec pubKeySpec = new RSAPublicKeySpec(new BigInteger(1, modulus), new BigInteger(1, exponent));
             publicKey = keyFactory.generatePublic(pubKeySpec);
         } catch (Exception ex) {
             // For debugging print out exception
@@ -123,7 +122,7 @@ public class CardCommunication {
         }
         return publicKey;
     }
-    
+
 //    public static boolean verifyPIN(byte pin[]) {
 //        // todo: get public key, encrypt PIN, send to card for verification
 //        
@@ -166,12 +165,10 @@ public class CardCommunication {
 //        } 
 //        return true;
 //    }
-        
-    
     //whatToDo: INS_VERIFYPIN to verify PIN or INS_CHANGEPIN to change PIN
     public static boolean doStuffWithPIN(byte pin[], byte whatToDo) {
         // todo: get public key, encrypt PIN, send to card for verification
-        
+
         RSAPublicKey publicKey = (RSAPublicKey) generateKeyPair();
         byte encryptedPin[];
         if (publicKey == null) {
@@ -188,7 +185,7 @@ public class CardCommunication {
             System.out.println("Exception: " + ex.getMessage());
             return false;
         }
-        
+
         byte apdu[] = new byte[CardMngr.HEADER_LENGTH + encryptedPin.length];
         apdu[CardMngr.OFFSET_CLA] = (byte) 0xB0;
         apdu[CardMngr.OFFSET_INS] = whatToDo;
@@ -207,20 +204,20 @@ public class CardCommunication {
             // For debugging print out exception
             System.out.println("Exception: " + ex.getMessage());
             return false;
-        } 
+        }
         return true;
     }
-    
-     public static boolean changePIN(byte pin[]) {
-         return doStuffWithPIN(pin, INS_CHANGEPIN);
-     }
-     
+
+    public static boolean changePIN(byte pin[]) {
+        return doStuffWithPIN(pin, INS_CHANGEPIN);
+    }
+
     //use this instead of original verifyPIN to reduce code 
     public static boolean verifyPIN(byte pin[]) {
         return doStuffWithPIN(pin, INS_VERIFYPIN);
     }
-  
-    public static byte[] getSecretKey(){
+
+    public static byte[] getSecretKey() {
         KeyPairGenerator keyGen;
         try {
             keyGen = KeyPairGenerator.getInstance("RSA");
@@ -229,23 +226,32 @@ public class CardCommunication {
             System.out.println("Exception: " + ex.getMessage());
             return null;
         }
-        keyGen.initialize(1024);
+        keyGen.initialize(1024, new SecureRandom());
+
+        /*RSAKeyPairGenerator rsaKeyPairGen = (RSAKeyPairGenerator) keyGen;
+        BigInteger myExp = ... // Create custom exponent
+        rsaPairKeyGen.initialize(1024, myExp, new SecureRandom());*/
+
         KeyPair keyPair = keyGen.genKeyPair();
         RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
         //byte[] modBytes = new byte[1024];
         //publicKey.getModulus(modBytes, (short) 0);
-        byte[] modBytes = publicKey.getModulus().toByteArray();
-        
-        //for some reason, modBytes has 129 bytes but first one is 0
-        byte apdu[] = new byte[CardMngr.HEADER_LENGTH + modBytes.length-1];
+        //byte[] modBytes = publicKey.getModulus().toByteArray();
+        byte[] modBytes = i2os(publicKey.getModulus(), 129);
+        if (modBytes[0] == 0) {
+            byte[] tmp = new byte[modBytes.length - 1];
+            System.arraycopy(modBytes, 1, tmp, 0, tmp.length);
+            modBytes = tmp;
+        }
+
+        byte apdu[] = new byte[CardMngr.HEADER_LENGTH + modBytes.length];
         apdu[CardMngr.OFFSET_CLA] = (byte) 0xB0;
         apdu[CardMngr.OFFSET_INS] = INS_SET_MOD;
         apdu[CardMngr.OFFSET_P1] = (byte) 0x00;
         apdu[CardMngr.OFFSET_P2] = (byte) 0x00;
-        //apdu[CardMngr.OFFSET_LC] = (byte) modBytes.length;
-        apdu[CardMngr.OFFSET_LC] = (byte) 128;  //it shouldn't be like this but java is so annoying..
+        apdu[CardMngr.OFFSET_LC] = (byte) modBytes.length;
 
-        System.arraycopy(modBytes, 1, apdu, CardMngr.OFFSET_DATA, modBytes.length -1);
+        System.arraycopy(modBytes, 0, apdu, CardMngr.OFFSET_DATA, modBytes.length);
         byte response[];
         try {
             response = cardManager.sendAPDU(apdu).getBytes();
@@ -257,13 +263,28 @@ public class CardCommunication {
             System.out.println("Exception: " + ex.getMessage());
             return null;
         }
-        
-        
+
         byte[] expBytes = publicKey.getPublicExponent().toByteArray();
-        System.out.println(expBytes.length);
+        //byte[] expBytes = i2os(publicKey.getPublicExponent(), 129);
+        if (expBytes[0] == 0 && expBytes.length > 128) {
+            byte[] tmp = new byte[expBytes.length - 1];
+            System.arraycopy(expBytes, 1, tmp, 0, tmp.length);
+            expBytes = tmp;
+        }
+
+        apdu = new byte[CardMngr.HEADER_LENGTH + expBytes.length];
+        apdu[CardMngr.OFFSET_CLA] = (byte) 0xB0;
         apdu[CardMngr.OFFSET_INS] = INS_SET_EXP_SEND_SEC_KEY;
+        apdu[CardMngr.OFFSET_P1] = (byte) 0x00;
+        apdu[CardMngr.OFFSET_P2] = (byte) 0x00;
         apdu[CardMngr.OFFSET_LC] = (byte) expBytes.length;
+        
+        
+        /*
+        apdu[CardMngr.OFFSET_INS] = INS_SET_EXP_SEND_SEC_KEY;
+        apdu[CardMngr.OFFSET_LC] = (byte) expBytes.length;*/
         System.arraycopy(expBytes, 0, apdu, CardMngr.OFFSET_DATA, expBytes.length);
+
         try {
             response = cardManager.sendAPDU(apdu).getBytes();
             if (response[response.length - 2] != (byte) 0x90 || response[response.length - 1] != (byte) 0x00) {
@@ -274,7 +295,7 @@ public class CardCommunication {
             System.out.println("Exception: " + ex.getMessage());
             return null;
         }
-        
+
         byte[] encryptedSecretKey = new byte[128];
         PrivateKey privateKey = keyPair.getPrivate();
         Cipher cipher;
@@ -296,7 +317,7 @@ public class CardCommunication {
             System.out.println(ex.getMessage());
             return null;
         }
-        
+
         byte[] secretKey;
         try {
             secretKey = cipher.doFinal(encryptedSecretKey);
@@ -309,7 +330,37 @@ public class CardCommunication {
             System.out.println(ex.getMessage());
             return null;
         }
-        
-        return secretKey;       
+
+        return secretKey;
+    }
+
+    public static byte[] i2os(final BigInteger i, final int size) {
+        if (i == null || i.signum() == -1) {
+            throw new IllegalArgumentException("Integer should be a positive number or 0");
+        }
+
+        if (size < 1) {
+            throw new IllegalArgumentException("Size of the octet string should be at least 1 but is " + size);
+        }
+
+        final byte[] signed = i.toByteArray();
+        if (signed.length == size) {
+            return signed;
+        }
+
+        final byte[] os = new byte[size];
+        if (signed.length < size) {
+            // copy to rightmost part of os variable (os initialized to 0x00 bytes)
+            System.arraycopy(signed, 0, os, size - signed.length, signed.length);
+            return os;
+        }
+
+        if (signed.length == size + 1 && signed[0] == 0x00) {
+            // copy to os variable, skipping initial sign byte
+            System.arraycopy(signed, 1, os, 0, size);
+            return os;
+        }
+
+        throw new IllegalArgumentException("Integer does not fit into an array of size " + size);
     }
 }
