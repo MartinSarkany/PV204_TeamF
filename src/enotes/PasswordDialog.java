@@ -32,6 +32,8 @@ public class PasswordDialog extends javax.swing.JDialog {
         initComponents();
         EnterPIN_jPasswordField.setText("");
         ConfirmPIN_jPasswordField.setText("");
+        
+        jLabel1.setText(jLabel1.getText() + " " + CardCommunication.getTriesRemaining());
     }
 
     /** This method is called from within the constructor to
@@ -49,6 +51,7 @@ public class PasswordDialog extends javax.swing.JDialog {
         EnterPIN_jPasswordField = new javax.swing.JPasswordField();
         ConfirmPIN_jPasswordField = new javax.swing.JPasswordField();
         SendToCard_jButton = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
 
         setTitle("Enter PIN");
         setResizable(false);
@@ -75,6 +78,8 @@ public class PasswordDialog extends javax.swing.JDialog {
             }
         });
 
+        jLabel1.setText("Number of tries remaining: ");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -82,19 +87,24 @@ public class PasswordDialog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addGap(80, 80, 80)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(SendToCard_jButton)
-                        .addGap(39, 39, 39)
-                        .addComponent(jButton2))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(EnterPIN_jLabel)
-                            .addComponent(ConfirmPIN_jLabel))
-                        .addGap(46, 46, 46)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(ConfirmPIN_jPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(EnterPIN_jPasswordField))))
-                .addContainerGap(82, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(SendToCard_jButton)
+                                .addGap(39, 39, 39)
+                                .addComponent(jButton2))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(EnterPIN_jLabel)
+                                    .addComponent(ConfirmPIN_jLabel))
+                                .addGap(46, 46, 46)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(ConfirmPIN_jPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(EnterPIN_jPasswordField))))
+                        .addContainerGap(82, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -107,7 +117,9 @@ public class PasswordDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(ConfirmPIN_jLabel)
                     .addComponent(ConfirmPIN_jPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2)
                     .addComponent(SendToCard_jButton))
@@ -161,6 +173,7 @@ public class PasswordDialog extends javax.swing.JDialog {
     private javax.swing.JPasswordField EnterPIN_jPasswordField;
     private javax.swing.JButton SendToCard_jButton;
     private javax.swing.JButton jButton2;
+    private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 
 
