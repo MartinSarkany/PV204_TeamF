@@ -12,7 +12,11 @@
 
 package enotes;
 
+import enotes.smartcard.CardCommunication;
+import enotes.smartcard.CardMngr;
 import java.awt.event.KeyEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -22,10 +26,14 @@ import javax.swing.JOptionPane;
 public class PasswordDialog extends javax.swing.JDialog {
 
     private String pwd = null;
+    //static CardMngr cardManagerForApp = new CardMngr();
+    static CardCommunication cardCommunicatorForApp = new CardCommunication();
 
     /** Creates new form PasswordDialog */
     public PasswordDialog() {
         initComponents();
+        EnterPIN_jPasswordField.setText("1234");
+        ConfirmPIN_jPasswordField.setText("1234");
     }
 
     /** This method is called from within the constructor to
@@ -43,6 +51,11 @@ public class PasswordDialog extends javax.swing.JDialog {
         pwf2 = new javax.swing.JPasswordField();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        EnterPIN_jLabel = new javax.swing.JLabel();
+        ConfirmPIN_jLabel = new javax.swing.JLabel();
+        EnterPIN_jPasswordField = new javax.swing.JPasswordField();
+        ConfirmPIN_jPasswordField = new javax.swing.JPasswordField();
+        SendToCard_jButton = new javax.swing.JButton();
 
         setTitle("Enter password");
         setResizable(false);
@@ -71,32 +84,69 @@ public class PasswordDialog extends javax.swing.JDialog {
             }
         });
 
+        EnterPIN_jLabel.setText("Enter PIN");
+
+        ConfirmPIN_jLabel.setText("Confirm PIN");
+
+        EnterPIN_jPasswordField.setText("jPasswordField1");
+
+        ConfirmPIN_jPasswordField.setText("jPasswordField2");
+
+        SendToCard_jButton.setText("Send To Card");
+        SendToCard_jButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SendToCard_jButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(80, 80, 80)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel1))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(pwf1, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(pwf2)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(125, 125, 125)
+                        .addGap(113, 113, 113)
                         .addComponent(jButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton2)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jButton2))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel1)
+                            .addComponent(EnterPIN_jLabel)
+                            .addComponent(ConfirmPIN_jLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(pwf1, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(pwf2, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(ConfirmPIN_jPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(EnterPIN_jPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(43, 43, 43)
+                                .addComponent(SendToCard_jButton)))))
+                .addContainerGap(78, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(42, 42, 42)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(EnterPIN_jLabel)
+                            .addComponent(EnterPIN_jPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(ConfirmPIN_jLabel)
+                            .addComponent(ConfirmPIN_jPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(SendToCard_jButton)
+                        .addGap(29, 29, 29)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(pwf1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -108,7 +158,7 @@ public class PasswordDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2)
                     .addComponent(jButton1))
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addGap(26, 26, 26))
         );
 
         pack();
@@ -128,6 +178,39 @@ public class PasswordDialog extends javax.swing.JDialog {
             clickOk();
     }//GEN-LAST:event_pwf2KeyReleased
 
+    
+    private void SendToCard_jButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SendToCard_jButtonActionPerformed
+        // TODO add your handling code here:
+        
+        String pin1 = new String(EnterPIN_jPasswordField.getPassword());
+        String pin2 = new String(ConfirmPIN_jPasswordField.getPassword());
+        if (!pin1.equals(pin2)) {
+            JOptionPane.showMessageDialog(this, "The PINs do not match!");
+            return;
+        }
+        
+        char[] PIN_in_Array = EnterPIN_jPasswordField.getPassword();
+         
+        byte[] pin = new byte[PIN_in_Array.length];
+
+	for (int m = 0; m < pin.length; m++) {
+	  pin[m] = (byte) (PIN_in_Array[m] - 48);
+          System.out.printf("%s",pin[m]);
+	 }
+      
+        cardCommunicatorForApp.verifyPIN(pin);
+        
+        
+//        try {
+//            cardManagerForApp.sendAPDU(pin);
+//        } catch (Exception ex) {
+//            Logger.getLogger(PasswordDialog.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+        
+        
+        
+    }//GEN-LAST:event_SendToCard_jButtonActionPerformed
+
     private void clickOk() {
         String p1 = new String(pwf1.getPassword());
         String p2 = new String(pwf2.getPassword());
@@ -141,6 +224,11 @@ public class PasswordDialog extends javax.swing.JDialog {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel ConfirmPIN_jLabel;
+    private javax.swing.JPasswordField ConfirmPIN_jPasswordField;
+    private javax.swing.JLabel EnterPIN_jLabel;
+    private javax.swing.JPasswordField EnterPIN_jPasswordField;
+    private javax.swing.JButton SendToCard_jButton;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
