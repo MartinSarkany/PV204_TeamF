@@ -111,12 +111,13 @@ public class EnotesApplet  extends javacard.framework.Applet
         else ISOException.throwIt( ISO7816.SW_CLA_NOT_SUPPORTED);
     }
 
-    void decryptPIN(byte[] apdubuf, short dataLen)
+    short decryptPIN(byte[] apdubuf, short dataLen)
     {
         m_rsaCipher.init(m_privateKey, Cipher.MODE_DECRYPT);
-        m_rsaCipher.doFinal(apdubuf, ISO7816.OFFSET_CDATA, dataLen, m_ramArray, (short) 0);
+        short len = m_rsaCipher.doFinal(apdubuf, ISO7816.OFFSET_CDATA, dataLen, m_ramArray, (short) 0);
         m_privateKey.clearKey();
         m_publicKey.clearKey();
+        return len;
     }
     
     void verifyPIN(APDU apdu) 
@@ -124,8 +125,7 @@ public class EnotesApplet  extends javacard.framework.Applet
         byte[]    apdubuf = apdu.getBuffer();
         short     dataLen = apdu.setIncomingAndReceive();     
         
-        decryptPIN(apdubuf, dataLen);
-        //apdu.setOutgoingAndSend((short)0, (short) 4);
+        short PINlen = decryptPIN(apdubuf, dataLen);
         
         if(m_pin.getTriesRemaining() == 0)
             ISOException.throwIt(ISO7816.SW_COMMAND_NOT_ALLOWED);
@@ -139,11 +139,11 @@ public class EnotesApplet  extends javacard.framework.Applet
         byte[]    apdubuf = apdu.getBuffer();
         short     dataLen = apdu.setIncomingAndReceive();
 
-        decryptPIN(apdubuf, dataLen);
+        short PINlen = decryptPIN(apdubuf, dataLen);
         
         if(!m_pin.isValidated())
             ISOException.throwIt(PIN_REQUIRED);
-        m_pin.update(apdubuf, ISO7816.OFFSET_CDATA, (byte) dataLen);
+        m_pin.update(m_ramArray, (short) 0, (byte) 4);
     }
     
     void genKeypairAndReturnModulus(APDU apdu)

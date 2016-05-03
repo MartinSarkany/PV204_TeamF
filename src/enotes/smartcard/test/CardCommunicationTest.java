@@ -91,7 +91,14 @@ public class CardCommunicationTest {
         byte[] oldPIN = new byte[]{0, 0, 0, 0};
         byte[] newPIN = new byte[]{1, 2, 3, 4};
         println("Verifying old pin:");
-        CardCommunication.verifyPIN(oldPIN);
+        boolean PINverified = CardCommunication.verifyPIN(oldPIN);
+        if (!PINverified) {
+            println("Couldn't verify old PIN");
+            CardCommunication.disconnect();
+            return false;
+        } else {
+            println("Old PIN verified");
+        }
         println("Changing PIN:");
         boolean PINchanged = CardCommunication.changePIN(newPIN);
         if (!PINchanged) {
@@ -101,8 +108,10 @@ public class CardCommunicationTest {
         } else {
             println("PIN changed to 1234");
         }
+        CardCommunication.disconnect();
+        CardCommunication.connectToCard();
         println("Verifying new PIN:");
-        boolean PINverified = CardCommunication.verifyPIN(newPIN);
+        PINverified = CardCommunication.verifyPIN(newPIN);
         if (!PINverified) {
             println("Couldn't verify new PIN");
             CardCommunication.disconnect();
@@ -117,7 +126,7 @@ public class CardCommunicationTest {
             CardCommunication.disconnect();
             return false;
         } else {
-            println("PIN changed to 1234");
+            println("PIN changed back to 0000");
         }
 
         CardCommunication.disconnect();
