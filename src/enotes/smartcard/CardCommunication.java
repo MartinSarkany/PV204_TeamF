@@ -12,10 +12,13 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.interfaces.RSAPublicKey;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.smartcardio.CardException;
 import javax.smartcardio.ResponseAPDU;
 
 /**
@@ -54,7 +57,16 @@ public class CardCommunication {
 
         return true;
     }
-
+    
+    public static void disconnect(){
+        try {
+            cardManager.DisconnectFromCard();
+        } catch (CardException ex) {
+            // For debugging print out exception
+            System.out.println(ex.getMessage());
+        }
+    }
+    
     public static boolean generateSecretKey() {
         byte apdu[] = new byte[CardMngr.HEADER_LENGTH];
         apdu[CardMngr.OFFSET_CLA] = (byte) 0xB0;
@@ -121,48 +133,7 @@ public class CardCommunication {
         return publicKey;
     }
 
-//    public static boolean verifyPIN(byte pin[]) {
-//        // todo: get public key, encrypt PIN, send to card for verification
-//        
-//        PublicKey publicKey = generateKeyPair();
-//        byte encryptedPin[];
-//        if (publicKey == null) {
-//            // For debugging
-//            System.out.println("Public key is null");
-//            return false;
-//        }
-//        try {
-//            Cipher cipher = Cipher.getInstance("RSA/None/PKCS1Padding", "BC");
-//            cipher.init(Cipher.ENCRYPT_MODE, (Key) publicKey);
-//            
-//            encryptedPin = cipher.doFinal(pin);
-//        } catch (Exception ex) {
-//            // For debugging print out exception
-//            System.out.println("Exception: " + ex.getMessage());
-//            return false;
-//        }
-//        
-//        byte apdu[] = new byte[CardMngr.HEADER_LENGTH + encryptedPin.length];
-//        apdu[CardMngr.OFFSET_CLA] = (byte) 0xB0;
-//        apdu[CardMngr.OFFSET_INS] = INS_VERIFYPIN;
-//        apdu[CardMngr.OFFSET_P1] = (byte) 0x00;
-//        apdu[CardMngr.OFFSET_P2] = (byte) 0x00;
-//        apdu[CardMngr.OFFSET_LC] = (byte) encryptedPin.length;
-//
-//        System.arraycopy(pin, 0, apdu, CardMngr.OFFSET_DATA, encryptedPin.length);
-//        byte response[];
-//        try {
-//            response = cardManager.sendAPDU(apdu).getBytes();
-//            if (response[response.length - 2] != (byte) 0x90 || response[response.length - 1] != (byte) 0x00) {
-//                return false;
-//            }
-//        } catch (Exception ex) {
-//            // For debugging print out exception
-//            System.out.println("Exception: " + ex.getMessage());
-//            return false;
-//        } 
-//        return true;
-//    }
+
     //whatToDo: INS_VERIFYPIN to verify PIN or INS_CHANGEPIN to change PIN
     public static boolean doStuffWithPIN(byte pin[], byte whatToDo) {
         // todo: get public key, encrypt PIN, send to card for verification
