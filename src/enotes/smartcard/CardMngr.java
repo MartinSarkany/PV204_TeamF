@@ -59,7 +59,7 @@ public class CardMngr {
         return cardFound;
     }
 
-    public void DisconnectFromCard() throws Exception {
+    public void DisconnectFromCard() throws CardException{
         if (m_card != null) {
             m_card.disconnect(false);
             m_card = null;
