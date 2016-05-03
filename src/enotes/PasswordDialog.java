@@ -148,7 +148,10 @@ public class PasswordDialog extends javax.swing.JDialog {
 	  pin[m] = (byte) (PIN_in_Array[m] - 48);
           //System.out.printf("%s",pin[m]);
 	 }
-        CardCommunication.verifyPIN(pin);
+        if(!CardCommunication.verifyPIN(pin)){
+            jLabel1.setText("Number of tries remaining: " + CardCommunication.getTriesRemaining());
+            return;
+        }
 
         
         pwd = pin1;
