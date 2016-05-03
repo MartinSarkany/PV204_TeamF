@@ -1,5 +1,8 @@
 package enotes;
 
+import enotes.smartcard.CardCommunication;
+import javax.swing.JOptionPane;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -17,6 +20,10 @@ public class ChangePINDialog extends javax.swing.JFrame {
      */
     public ChangePINDialog() {
         initComponents();
+        NewPIN_jPasswordField.setText("");
+        CurrentPIN_jPasswordField.setText("");
+        ReenterNewPIN_jPasswordField.setText("");
+        
     }
 
     /**
@@ -28,21 +35,155 @@ public class ChangePINDialog extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        NewPIN_jLabel = new javax.swing.JLabel();
+        ReenterNewPIN_jLabel = new javax.swing.JLabel();
+        NewPIN_jPasswordField = new javax.swing.JPasswordField();
+        ReenterNewPIN_jPasswordField = new javax.swing.JPasswordField();
+        ChangePINOK_jButton = new javax.swing.JButton();
+        ChangePINCancel_jButton = new javax.swing.JButton();
+        CurrentPIN_jLabel = new javax.swing.JLabel();
+        CurrentPIN_jPasswordField = new javax.swing.JPasswordField();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Change PIN");
+
+        NewPIN_jLabel.setText("Enter New PIN");
+
+        ReenterNewPIN_jLabel.setText("Re-Enter New PIN");
+
+        NewPIN_jPasswordField.setText("jPasswordField1");
+
+        ReenterNewPIN_jPasswordField.setText("jPasswordField2");
+
+        ChangePINOK_jButton.setText("OK");
+        ChangePINOK_jButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ChangePINOK_jButtonActionPerformed(evt);
+            }
+        });
+
+        ChangePINCancel_jButton.setText("Cancel");
+        ChangePINCancel_jButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ChangePINCancel_jButtonActionPerformed(evt);
+            }
+        });
+
+        CurrentPIN_jLabel.setText("Current PIN");
+
+        CurrentPIN_jPasswordField.setText("jPasswordField3");
+        CurrentPIN_jPasswordField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CurrentPIN_jPasswordFieldActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(73, 73, 73)
+                                .addComponent(CurrentPIN_jLabel)
+                                .addGap(49, 49, 49))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(ReenterNewPIN_jLabel)
+                                .addGap(18, 18, 18)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(ReenterNewPIN_jPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(CurrentPIN_jPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(75, 75, 75)
+                        .addComponent(ChangePINOK_jButton)
+                        .addGap(62, 62, 62)
+                        .addComponent(ChangePINCancel_jButton))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(73, 73, 73)
+                        .addComponent(NewPIN_jLabel)
+                        .addGap(33, 33, 33)
+                        .addComponent(NewPIN_jPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(86, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(31, 31, 31)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(CurrentPIN_jLabel)
+                    .addComponent(CurrentPIN_jPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(28, 28, 28)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(NewPIN_jLabel)
+                    .addComponent(NewPIN_jPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(31, 31, 31)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(ReenterNewPIN_jLabel)
+                    .addComponent(ReenterNewPIN_jPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(58, 58, 58)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(ChangePINOK_jButton)
+                    .addComponent(ChangePINCancel_jButton))
+                .addContainerGap(61, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void ChangePINOK_jButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChangePINOK_jButtonActionPerformed
+        // TODO add your handling code here:
+        //String pin1 = new String(CurrentPIN_jPasswordField.getPassword());
+        String pin2 = new String(NewPIN_jPasswordField.getPassword());
+        String pin3 = new String(ReenterNewPIN_jPasswordField.getPassword());
+        if (!pin2.equals(pin3)) {
+            JOptionPane.showMessageDialog(this, "The PINs do not match!");
+            return;
+        }
+        
+        char[] CurrentPIN_in_Array = CurrentPIN_jPasswordField.getPassword();
+         
+        byte[] currentPin = new byte[CurrentPIN_in_Array.length];
+
+	for (int m = 0; m < currentPin.length; m++) {
+	  currentPin[m] = (byte) (CurrentPIN_in_Array[m] - 48);
+          //System.out.printf("%s",pin[m]);
+	 }
+        if(!CardCommunication.verifyPIN(currentPin)){   
+            JOptionPane.showMessageDialog(this, "PIN Verification Failed !");
+            return;
+        }
+        
+        //new pin
+        
+        char[] NewPIN_in_Array = NewPIN_jPasswordField.getPassword();
+         
+        byte[] newPin = new byte[NewPIN_in_Array.length];
+
+	for (int m = 0; m < newPin.length; m++) {
+	  newPin[m] = (byte) (NewPIN_in_Array[m] - 48);
+          //System.out.printf("%s",pin[m]);
+	 }
+        if(!CardCommunication.changePIN(newPin)){   
+            JOptionPane.showMessageDialog(this, "Changing PIN Fails!");
+            return;
+        }
+        JOptionPane.showMessageDialog(this, "PIN Changed !");
+        this.setVisible(false);
+        
+    }//GEN-LAST:event_ChangePINOK_jButtonActionPerformed
+
+    private void ChangePINCancel_jButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChangePINCancel_jButtonActionPerformed
+        // TODO add your handling code here:
+        this.setVisible(false);
+    }//GEN-LAST:event_ChangePINCancel_jButtonActionPerformed
+
+    private void CurrentPIN_jPasswordFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CurrentPIN_jPasswordFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_CurrentPIN_jPasswordFieldActionPerformed
 
     /**
      * @param args the command line arguments
@@ -80,5 +221,13 @@ public class ChangePINDialog extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton ChangePINCancel_jButton;
+    private javax.swing.JButton ChangePINOK_jButton;
+    private javax.swing.JLabel CurrentPIN_jLabel;
+    private javax.swing.JPasswordField CurrentPIN_jPasswordField;
+    private javax.swing.JLabel NewPIN_jLabel;
+    private javax.swing.JPasswordField NewPIN_jPasswordField;
+    private javax.swing.JLabel ReenterNewPIN_jLabel;
+    private javax.swing.JPasswordField ReenterNewPIN_jPasswordField;
     // End of variables declaration//GEN-END:variables
 }
