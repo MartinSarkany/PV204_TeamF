@@ -137,11 +137,3 @@ public class CardCommunicationTest {
         System.out.println(msg);
     }
 }
-
-/*
-1. connect + verify pin + change pin + verify pin
-2. change pin (verify that fails)
-3. verify pin + encrypt + decrypt (verify the same message as orignially encrypted)
-4. encrypt (without verify)
-5. decrypt (without verify)
- */
