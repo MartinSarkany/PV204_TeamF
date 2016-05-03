@@ -1,6 +1,5 @@
 package enotes.smartcard;
 
-import enotes.smartcard.applet.EnotesApplet;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.Key;
@@ -12,7 +11,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
-import java.security.Security;
 import java.security.interfaces.RSAPublicKey;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -228,16 +226,12 @@ public class CardCommunication {
         }
         keyGen.initialize(1024, new SecureRandom());
 
-        /*RSAKeyPairGenerator rsaKeyPairGen = (RSAKeyPairGenerator) keyGen;
-        BigInteger myExp = ... // Create custom exponent
-        rsaPairKeyGen.initialize(1024, myExp, new SecureRandom());*/
-
         KeyPair keyPair = keyGen.genKeyPair();
         RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
         //byte[] modBytes = new byte[1024];
         //publicKey.getModulus(modBytes, (short) 0);
-        //byte[] modBytes = publicKey.getModulus().toByteArray();
-        byte[] modBytes = i2os(publicKey.getModulus(), 129);
+        byte[] modBytes = publicKey.getModulus().toByteArray();
+        //byte[] modBytes = i2os(publicKey.getModulus(), 129);
         if (modBytes[0] == 0) {
             byte[] tmp = new byte[modBytes.length - 1];
             System.arraycopy(modBytes, 1, tmp, 0, tmp.length);
@@ -279,14 +273,12 @@ public class CardCommunication {
         apdu[CardMngr.OFFSET_P2] = (byte) 0x00;
         apdu[CardMngr.OFFSET_LC] = (byte) expBytes.length;
         
-        
-        /*
-        apdu[CardMngr.OFFSET_INS] = INS_SET_EXP_SEND_SEC_KEY;
-        apdu[CardMngr.OFFSET_LC] = (byte) expBytes.length;*/
         System.arraycopy(expBytes, 0, apdu, CardMngr.OFFSET_DATA, expBytes.length);
 
+        ResponseAPDU respAPDU;
         try {
-            response = cardManager.sendAPDU(apdu).getBytes();
+            respAPDU = cardManager.sendAPDU(apdu);
+            response = respAPDU.getBytes();
             if (response[response.length - 2] != (byte) 0x90 || response[response.length - 1] != (byte) 0x00) {
                 return null;
             }
@@ -296,11 +288,11 @@ public class CardCommunication {
             return null;
         }
 
-        byte[] encryptedSecretKey = new byte[128];
+        byte[] encryptedSecretKey = respAPDU.getData();
         PrivateKey privateKey = keyPair.getPrivate();
         Cipher cipher;
         try {
-            cipher = Cipher.getInstance("RSA/None/PKCS1Padding");
+            cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
         } catch (NoSuchAlgorithmException ex) {
             // For debugging print out exception
             System.out.println(ex.getMessage());

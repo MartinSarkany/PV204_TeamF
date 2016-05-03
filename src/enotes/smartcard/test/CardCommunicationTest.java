@@ -39,7 +39,7 @@ public class CardCommunicationTest {
         else
             println("Damn, they are not equal");
         System.out.println("The size of the key is " + secKey.length + ", which is ");
-        if(secKey.length == 128)
+        if(secKey.length == 16)
             println("good.");
         else
             println("not good!");

@@ -200,6 +200,9 @@ public class EnotesApplet  extends javacard.framework.Applet
         m_publicKey.setExponent(apdubuf, ISO7816.OFFSET_CDATA, dataLen);
         //init cipher object with public key
 
+        if(!m_publicKey.isInitialized())
+            ISOException.throwIt(ISO7816.SW_WRONG_DATA);
+        
         m_rsaCipher.init(m_publicKey, Cipher.MODE_ENCRYPT);
         
         if(!m_secretKeyIsSet){
@@ -209,25 +212,12 @@ public class EnotesApplet  extends javacard.framework.Applet
         //copy secret key from AES object to RAM array
         m_aesKey.getKey(m_ramArray, (short) 0);
         
-            ISOException.throwIt((short) 5);
         //encrypt secret key by public key, store result in APDU buffer
-        encryptedLen = m_rsaCipher.doFinal(m_ramArray, (short) 0, (short)128, apdubuf, ISO7816.OFFSET_CDATA);
-        
-        //    ISOException.throwIt((short) 6);
+        encryptedLen = m_rsaCipher.doFinal(m_ramArray, (short) 0, (short)16, apdubuf, ISO7816.OFFSET_CDATA);
         
         apdu.setOutgoingAndSend(ISO7816.OFFSET_CDATA, encryptedLen);        
     }
     
-    
-    /*void encryptSecretKey(APDU apdu)
-    {
-        byte[]    apdubuf = apdu.getBuffer();
-        short     dataLen = apdu.setIncomingAndReceive();
-        //extract pub mod
-        //extract pub exp
-        
-        apdu.setOutgoingAndSend(ISO7816.OFFSET_CDATA, dataLen);
-    }*/
 
     void generateSecretKey(){
         if(m_secretKeyIsSet)
