@@ -37,6 +37,7 @@ public class CardCommunication {
     final static byte INS_SET_EXP_SEND_SEC_KEY = (byte) 0x54;
     final static byte INS_VERIFYPIN = (byte) 0x55;
     final static byte INS_CHANGEPIN = (byte) 0x56;
+    final static byte INS_GET_TRIES_REM = (byte) 0x57;
 
     private static byte SELECT_ENOTESAPPLET[] = {(byte) 0x00, (byte) 0xa4, (byte) 0x04, (byte) 0x00, (byte) 0x0b,
         (byte) 0x65, (byte) 0x6e, (byte) 0x6f, (byte) 0x74, (byte) 0x65,
@@ -297,6 +298,31 @@ public class CardCommunication {
         return secretKey;
     }
 
+    public static int getTriesRemaining(){
+        byte[] apdu = new byte[CardMngr.HEADER_LENGTH ];
+        apdu[CardMngr.OFFSET_CLA] = (byte) 0xB0;
+        apdu[CardMngr.OFFSET_INS] = INS_GET_TRIES_REM;
+        apdu[CardMngr.OFFSET_P1] = (byte) 0x00;
+        apdu[CardMngr.OFFSET_P2] = (byte) 0x00;
+        apdu[CardMngr.OFFSET_LC] = (byte) 0x00;
+        
+        ResponseAPDU respAPDU;
+        byte[] response;
+        try {
+            respAPDU = cardManager.sendAPDU(apdu);
+            response = respAPDU.getBytes();
+            if (response[response.length - 2] != (byte) 0x90 || response[response.length - 1] != (byte) 0x00) {
+                return -1;
+            }
+        } catch (Exception ex) {
+            // For debugging print out exception
+            System.out.println("Exception: " + ex.getMessage());
+            return -1;
+        }
+        
+        return response[0];
+    }
+    
     public static byte[] i2os(final BigInteger i, final int size) {
         if (i == null || i.signum() == -1) {
             throw new IllegalArgumentException("Integer should be a positive number or 0");
@@ -326,4 +352,5 @@ public class CardCommunication {
 
         throw new IllegalArgumentException("Integer does not fit into an array of size " + size);
     }
+    
 }

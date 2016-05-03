@@ -17,6 +17,7 @@ public class EnotesApplet  extends javacard.framework.Applet
     final static byte INS_SET_EXP_SEND_SEC_KEY       = (byte) 0x54;
     final static byte INS_VERIFYPIN                  = (byte) 0x55;
     final static byte INS_CHANGEPIN                  = (byte) 0x56;
+    final static byte INS_GET_TRIES_REM              = (byte) 0x57;
     
     final static short ARRAY_LENGTH                  = (short) 0xff;
     
@@ -102,6 +103,7 @@ public class EnotesApplet  extends javacard.framework.Applet
                 case INS_SET_EXP_SEND_SEC_KEY: setExponentAndReturnEncryptedKey(apdu); break;
                 case INS_CHANGEPIN: changePIN(apdu); break;
                 case INS_VERIFYPIN: verifyPIN(apdu); break;
+                case INS_GET_TRIES_REM: getTriesRemaining(apdu); break;
                 default :
                     // The INS code is not supported by the dispatcher
                     ISOException.throwIt( ISO7816.SW_INS_NOT_SUPPORTED ) ;
@@ -232,4 +234,10 @@ public class EnotesApplet  extends javacard.framework.Applet
     }
     
   
+    void getTriesRemaining(APDU apdu){
+        byte[] apdubuf = apdu.getBuffer();
+        
+        apdubuf[0] = m_pin.getTriesRemaining();
+        apdu.setOutgoingAndSend((short)0, (short) 1);
+    }
 }

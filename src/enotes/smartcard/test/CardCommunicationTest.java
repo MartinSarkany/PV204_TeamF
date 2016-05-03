@@ -12,6 +12,7 @@ public class CardCommunicationTest {
         changePINwithoutPINverification();
         getKey2TimesAndCompare();
         changedPINVerification();
+        gettingRemainingTries();
     }
 
     public static boolean connecting() {
@@ -131,6 +132,22 @@ public class CardCommunicationTest {
             return false;
         } else {
             println("PIN changed back to 0000");
+        }
+
+        CardCommunication.disconnect();
+        return true;
+    }
+
+    public static boolean gettingRemainingTries() {
+        CardCommunication.connectToCard();
+        int tries = CardCommunication.getTriesRemaining();
+
+        if (tries < 0) {
+            println("Something went wrong");
+            CardCommunication.disconnect();
+            return false;
+        } else {
+            println("Tries remaining: " + tries);
         }
 
         CardCommunication.disconnect();
