@@ -340,8 +340,9 @@ public class MainForm extends javax.swing.JFrame {
 
     private void ChangePIN_jMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChangePIN_jMenuItemActionPerformed
         // TODO add your handling code here:
-        //ChangePINDialog().setVisible(true);
-        this.setVisible(true);
+        ChangePINDialog chpd = new ChangePINDialog();
+        chpd.setVisible(true);
+        //this.setVisible(true);
     }//GEN-LAST:event_ChangePIN_jMenuItemActionPerformed
 
 
