@@ -26,8 +26,6 @@ import javax.swing.JOptionPane;
 public class PasswordDialog extends javax.swing.JDialog {
 
     private String pwd = null;
-    //static CardMngr cardManagerForApp = new CardMngr();
-    static CardCommunication cardCommunicatorForApp = new CardCommunication();
 
     /** Creates new form PasswordDialog */
     public PasswordDialog() {
@@ -52,7 +50,7 @@ public class PasswordDialog extends javax.swing.JDialog {
         ConfirmPIN_jPasswordField = new javax.swing.JPasswordField();
         SendToCard_jButton = new javax.swing.JButton();
 
-        setTitle("Enter password");
+        setTitle("Enter PIN");
         setResizable(false);
 
         jButton2.setText("Cancel");

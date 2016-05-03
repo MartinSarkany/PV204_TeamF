@@ -88,6 +88,7 @@ public class MainForm extends javax.swing.JFrame {
         miSave = new javax.swing.JMenuItem();
         miSaveAs = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JSeparator();
+        ChangePIN_jMenuItem = new javax.swing.JMenuItem();
         miExit = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         miFind = new javax.swing.JMenuItem();
@@ -143,12 +144,12 @@ public class MainForm extends javax.swing.JFrame {
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.SOUTH);
 
-        tp.setFont(new java.awt.Font("Monospaced", 0, 12));
+        tp.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         tp.addInputMethodListener(new java.awt.event.InputMethodListener() {
-            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
-            }
             public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
                 tpCaretPositionChanged(evt);
+            }
+            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
             }
         });
         tp.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -200,6 +201,14 @@ public class MainForm extends javax.swing.JFrame {
         });
         jMenu1.add(miSaveAs);
         jMenu1.add(jSeparator1);
+
+        ChangePIN_jMenuItem.setText("Change PIN");
+        ChangePIN_jMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ChangePIN_jMenuItemActionPerformed(evt);
+            }
+        });
+        jMenu1.add(ChangePIN_jMenuItem);
 
         miExit.setText("Exit");
         miExit.addActionListener(new java.awt.event.ActionListener() {
@@ -329,8 +338,15 @@ public class MainForm extends javax.swing.JFrame {
                 "Released under the BSD License\nProject web: http://sourceforge.net/projects/enotes\n\nUsing "+Doc.CRYPTO_MODE);
     }//GEN-LAST:event_miAboutActionPerformed
 
+    private void ChangePIN_jMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChangePIN_jMenuItemActionPerformed
+        // TODO add your handling code here:
+        //ChangePINDialog().setVisible(true);
+        this.setVisible(true);
+    }//GEN-LAST:event_ChangePIN_jMenuItemActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem ChangePIN_jMenuItem;
     private javax.swing.JButton btFind;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
