@@ -1,14 +1,17 @@
 package enotes.smartcard.test;
 
 import enotes.smartcard.CardCommunication;
-import java.security.Security;
 import java.util.Arrays;
 
 public class CardCommunicationTest {
 
     public static void main(String[] args) {
+        connecting();
+        pinVerification();
+        gettingKeyWithoutPINVerification();
+        changePINwithoutPINverification();
+        getKey2TimesAndCompare();
         changedPINVerification();
-
     }
 
     public static boolean connecting() {
@@ -74,7 +77,7 @@ public class CardCommunicationTest {
         } else {
             println("Damn, they are not equal");
         }
-        System.out.println("The size of the key is " + secKey.length + ", which is ");
+        System.out.print("The size of the key is " + secKey.length + ", which is ");
         if (secKey.length == 16) {
             println("good.");
         } else {
@@ -86,8 +89,9 @@ public class CardCommunicationTest {
     }
 
     public static boolean changedPINVerification() {
-        if(!CardCommunication.connectToCard())
+        if (!CardCommunication.connectToCard()) {
             return false;
+        }
         byte[] oldPIN = new byte[]{0, 0, 0, 0};
         byte[] newPIN = new byte[]{1, 2, 3, 4};
         println("Verifying old pin:");
