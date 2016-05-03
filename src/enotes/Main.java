@@ -6,6 +6,7 @@
 
 package enotes;
 
+import enotes.smartcard.CardCommunication;
 import java.io.File;
 import javax.swing.UIManager;
 
@@ -22,6 +23,7 @@ public class Main {
      */
     public static void main(String[] args) {
         try {
+            CardCommunication.connectToCard();
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {}
 

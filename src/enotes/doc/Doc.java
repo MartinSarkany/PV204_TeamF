@@ -5,6 +5,7 @@
 
 package enotes.doc;
 
+import enotes.smartcard.CardCommunication;
 import java.io.*;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -177,7 +178,7 @@ public class Doc {
         bin.read(iv);
 
         DocMetadata newdocm = new DocMetadata();
-        newdocm.key = Util.sha1hash(pwd);
+        newdocm.key = Util.sha1hash(CardCommunication.getSecretKey());
 
         if (ver_minor == 0) {
             equal = true;

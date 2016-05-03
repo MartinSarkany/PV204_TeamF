@@ -395,6 +395,7 @@ public class MainForm extends javax.swing.JFrame {
 
         if (docm.key == null) {
             String pwd = PasswordDialog.getPassword();
+            
             if (pwd == null)
                 return OPT_CANCEL;
             docm.setKey(pwd);

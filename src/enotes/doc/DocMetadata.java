@@ -5,6 +5,7 @@
 
 package enotes.doc;
 
+import enotes.smartcard.CardCommunication;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -55,7 +56,11 @@ public class DocMetadata implements Serializable {
     }
 
     public void setKey(String pwd) {
-        key = Util.sha1hash(pwd);
+        byte[] something = CardCommunication.getSecretKey();
+        for(int i=0;i<something.length;i++){
+            System.out.println(something[i]);
+        }
+        key = Util.sha1hash(CardCommunication.getSecretKey());
     }
 
 }
