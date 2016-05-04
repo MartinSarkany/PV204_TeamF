@@ -146,27 +146,20 @@ public class PasswordDialog extends javax.swing.JDialog {
 
 	for (int m = 0; m < pin.length; m++) {
 	  pin[m] = (byte) (PIN_in_Array[m] - 48);
-          //System.out.printf("%s",pin[m]);
 	 }
         if(!CardCommunication.verifyPIN(pin)){
             jLabel1.setText("Number of tries remaining: " + CardCommunication.getTriesRemaining());
             return;
         }
 
-        
         pwd = pin1;
         this.setVisible(false);
-
-        
-        
-        
     }//GEN-LAST:event_SendToCard_jButtonActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         pwd = null;
         this.setVisible(false);
     }//GEN-LAST:event_jButton2ActionPerformed
-
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

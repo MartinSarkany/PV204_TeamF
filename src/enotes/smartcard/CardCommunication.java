@@ -12,8 +12,6 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.interfaces.RSAPublicKey;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -39,7 +37,7 @@ public class CardCommunication {
     final static byte INS_CHANGEPIN = (byte) 0x56;
     final static byte INS_GET_TRIES_REM = (byte) 0x57;
 
-    private static byte SELECT_ENOTESAPPLET[] = {(byte) 0x00, (byte) 0xa4, (byte) 0x04, (byte) 0x00, (byte) 0x0b,
+    private static final byte SELECT_ENOTESAPPLET[] = {(byte) 0x00, (byte) 0xa4, (byte) 0x04, (byte) 0x00, (byte) 0x0b,
         (byte) 0x65, (byte) 0x6e, (byte) 0x6f, (byte) 0x74, (byte) 0x65,
         (byte) 0x73, (byte) 0x20, (byte) 0x61, (byte) 0x70, (byte) 0x70,
         (byte) 0x6c/*, (byte) 0x65, (byte) 0x74*/};
@@ -182,7 +180,6 @@ public class CardCommunication {
         return doStuffWithPIN(pin, INS_CHANGEPIN);
     }
 
-    //use this instead of original verifyPIN to reduce code 
     public static boolean verifyPIN(byte pin[]) {
         return doStuffWithPIN(pin, INS_VERIFYPIN);
     }
