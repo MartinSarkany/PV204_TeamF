@@ -36,6 +36,7 @@ public class CardCommunication {
     final static byte INS_VERIFYPIN = (byte) 0x55;
     final static byte INS_CHANGEPIN = (byte) 0x56;
     final static byte INS_GET_TRIES_REM = (byte) 0x57;
+    final static byte INS_RESET_PIN = (byte) 0x58;
 
     private static final byte SELECT_ENOTESAPPLET[] = {(byte) 0x00, (byte) 0xa4, (byte) 0x04, (byte) 0x00, (byte) 0x0b,
         (byte) 0x65, (byte) 0x6e, (byte) 0x6f, (byte) 0x74, (byte) 0x65,
@@ -182,6 +183,10 @@ public class CardCommunication {
 
     public static boolean verifyPIN(byte pin[]) {
         return doStuffWithPIN(pin, INS_VERIFYPIN);
+    }
+    
+    public static boolean resetPIN(byte[] pin){
+        return doStuffWithPIN(pin, INS_RESET_PIN);
     }
 
     public static byte[] getSecretKey() {

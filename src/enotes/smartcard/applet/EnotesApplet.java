@@ -18,6 +18,7 @@ public class EnotesApplet  extends javacard.framework.Applet
     final static byte INS_VERIFYPIN                  = (byte) 0x55;
     final static byte INS_CHANGEPIN                  = (byte) 0x56;
     final static byte INS_GET_TRIES_REM              = (byte) 0x57;
+    final static byte INS_RESET_PIN                  = (byte) 0x58;
     
     final static short ARRAY_LENGTH                  = (short) 0xff;
     
@@ -30,6 +31,7 @@ public class EnotesApplet  extends javacard.framework.Applet
     private   AESKey        m_aesKey = null;
     private   RandomData    m_secureRandom = null;
     private   OwnerPIN      m_pin = null;
+    private   OwnerPIN      m_soPin = null;
     private   KeyPair       m_keyPair = null;
     private   RSAPrivateKey m_privateKey = null;
     private   RSAPublicKey  m_publicKey = null;
@@ -57,6 +59,9 @@ public class EnotesApplet  extends javacard.framework.Applet
 
             m_pin = new OwnerPIN((byte) 5, (byte) 4);
             m_pin.update(m_ramArray, (byte) 0, (byte) 4);
+            
+            m_soPin = new OwnerPIN((byte) 5, (byte) 8);
+            m_pin.update(buffer, (byte) 10, (byte) 8);
 
             // CREATE RSA KEYS AND PAIR
             m_keyPair = new KeyPair(KeyPair.ALG_RSA, KeyBuilder.LENGTH_RSA_1024);
@@ -190,14 +195,6 @@ public class EnotesApplet  extends javacard.framework.Applet
         if(!m_pin.isValidated())
             ISOException.throwIt(PIN_REQUIRED);
         
-        //if modulus is not set
-        /*if(m_publicKey.getModulus(m_ramArray,(short) 0) == 0)
-            ISOException.throwIt(ISO7816.SW_CONDITIONS_NOT_SATISFIED);*/
-        
-        //if not the right length
-        /*if(dataLen != 128)
-            ISOException.throwIt(ISO7816.SW_WRONG_LENGTH);*/
-        
         //set public key exponent (modulus is already set)
         m_publicKey.setExponent(apdubuf, ISO7816.OFFSET_CDATA, dataLen);
         //init cipher object with public key
@@ -239,5 +236,21 @@ public class EnotesApplet  extends javacard.framework.Applet
         
         apdubuf[0] = m_pin.getTriesRemaining();
         apdu.setOutgoingAndSend((short)0, (short) 1);
+    }
+    
+    void resetPin(APDU apdu){
+        byte[]    apdubuf = apdu.getBuffer();
+        short     dataLen = apdu.setIncomingAndReceive();     
+        
+        decryptPIN(apdubuf, dataLen);
+        
+        if(m_soPin.getTriesRemaining() == 0)
+            ISOException.throwIt(ISO7816.SW_COMMAND_NOT_ALLOWED);
+
+        if (m_soPin.check(m_ramArray, (byte) 0, (byte) 8) == false)
+            ISOException.throwIt(SW_BAD_PIN);
+        
+        Util.arrayFillNonAtomic(m_ramArray, (short) 0, (short) 4, (byte) 0);
+        m_pin.update(m_ramArray, (short) 0, (byte) 4);
     }
 }
