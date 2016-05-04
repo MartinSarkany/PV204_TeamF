@@ -42,6 +42,7 @@ public class ChangePINDialog extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Change PIN");
         setIconImages(null);
+        setLocation(new java.awt.Point(750, 350));
 
         NewPIN_jLabel.setText("Enter New PIN");
 

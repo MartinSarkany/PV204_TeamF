@@ -8,7 +8,7 @@
       <ComponentRef name="null"/>
     </Property>
     <Property name="location" type="java.awt.Point" editor="org.netbeans.beaninfo.editors.PointEditor">
-      <Point value="[0, 0]"/>
+      <Point value="[750, 350]"/>
     </Property>
   </Properties>
   <SyntheticProperties>
