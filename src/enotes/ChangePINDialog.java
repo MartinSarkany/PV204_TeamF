@@ -3,11 +3,6 @@ package enotes;
 import enotes.smartcard.CardCommunication;
 import javax.swing.JOptionPane;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /**
  *
@@ -150,7 +145,6 @@ public class ChangePINDialog extends javax.swing.JFrame {
 
 	for (int m = 0; m < currentPin.length; m++) {
 	  currentPin[m] = (byte) (CurrentPIN_in_Array[m] - 48);
-          //System.out.printf("%s",pin[m]);
 	 }
         if(!CardCommunication.verifyPIN(currentPin)){   
             JOptionPane.showMessageDialog(this, "PIN Verification Failed !");
@@ -158,14 +152,12 @@ public class ChangePINDialog extends javax.swing.JFrame {
         }
         
         //new pin
-        
         char[] NewPIN_in_Array = NewPIN_jPasswordField.getPassword();
          
         byte[] newPin = new byte[NewPIN_in_Array.length];
 
 	for (int m = 0; m < newPin.length; m++) {
 	  newPin[m] = (byte) (NewPIN_in_Array[m] - 48);
-          //System.out.printf("%s",pin[m]);
 	 }
         if(!CardCommunication.changePIN(newPin)){   
             JOptionPane.showMessageDialog(this, "Changing PIN Fails!");
@@ -177,7 +169,6 @@ public class ChangePINDialog extends javax.swing.JFrame {
     }//GEN-LAST:event_ChangePINOK_jButtonActionPerformed
 
     private void ChangePINCancel_jButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChangePINCancel_jButtonActionPerformed
-        // TODO add your handling code here:
         this.setVisible(false);
     }//GEN-LAST:event_ChangePINCancel_jButtonActionPerformed
 
