@@ -8,6 +8,8 @@ package enotes;
 
 import enotes.smartcard.CardCommunication;
 import java.io.File;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 /**
@@ -23,7 +25,11 @@ public class Main {
      */
     public static void main(String[] args) {
         try {
-            CardCommunication.connectToCard();
+            if(!CardCommunication.connectToCard()){
+                JFrame frame = new JFrame("JOptionPane showMessafeDialog noCard");
+                JOptionPane.showMessageDialog(frame, "No smart card present!");
+                System.exit(1);
+            }
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {}
 

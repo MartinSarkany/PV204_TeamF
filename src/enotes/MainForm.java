@@ -87,8 +87,8 @@ public class MainForm extends javax.swing.JFrame {
         miOpen = new javax.swing.JMenuItem();
         miSave = new javax.swing.JMenuItem();
         miSaveAs = new javax.swing.JMenuItem();
-        jSeparator1 = new javax.swing.JSeparator();
         ChangePIN_jMenuItem = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JSeparator();
         miExit = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         miFind = new javax.swing.JMenuItem();
@@ -200,7 +200,6 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
         jMenu1.add(miSaveAs);
-        jMenu1.add(jSeparator1);
 
         ChangePIN_jMenuItem.setText("Change PIN");
         ChangePIN_jMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -209,6 +208,7 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
         jMenu1.add(ChangePIN_jMenuItem);
+        jMenu1.add(jSeparator1);
 
         miExit.setText("Exit");
         miExit.addActionListener(new java.awt.event.ActionListener() {

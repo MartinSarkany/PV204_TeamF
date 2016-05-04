@@ -134,7 +134,7 @@ public class CardCommunication {
 
 
     //whatToDo: INS_VERIFYPIN to verify PIN or INS_CHANGEPIN to change PIN
-    public static boolean doStuffWithPIN(byte pin[], byte whatToDo) {
+    private static boolean doStuffWithPIN(byte pin[], byte whatToDo) {
         // todo: get public key, encrypt PIN, send to card for verification
 
         RSAPublicKey publicKey = (RSAPublicKey) generateKeyPair();
