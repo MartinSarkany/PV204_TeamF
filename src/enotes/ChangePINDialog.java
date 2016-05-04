@@ -183,7 +183,17 @@ public class ChangePINDialog extends javax.swing.JFrame {
     }//GEN-LAST:event_CurrentPIN_jPasswordFieldActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+       char[] CurrentPIN_in_Array = CurrentPIN_jPasswordField.getPassword();
+         
+        byte[] currentPin = new byte[CurrentPIN_in_Array.length];
+
+	for (int m = 0; m < currentPin.length; m++) {
+	  currentPin[m] = (byte) (CurrentPIN_in_Array[m] - 48);
+	 }
+        if(!CardCommunication.resetPIN(currentPin)){
+            JOptionPane.showMessageDialog(this, "Wrong PIN entered!");
+            return;
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

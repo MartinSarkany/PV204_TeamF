@@ -45,7 +45,7 @@ public class EnotesApplet  extends javacard.framework.Applet
 
     protected EnotesApplet(byte[] buffer, short offset, byte length) 
     {
-        if(length > 9) {
+        if(length > 17) {
             
             // TEMPORARY BUFFER USED FOR FAST OPERATION WITH MEMORY LOCATED IN RAM
             m_ramArray = JCSystem.makeTransientByteArray((short) 260, JCSystem.CLEAR_ON_DESELECT);
@@ -61,7 +61,10 @@ public class EnotesApplet  extends javacard.framework.Applet
             m_pin.update(m_ramArray, (byte) 0, (byte) 4);
             
             m_soPin = new OwnerPIN((byte) 5, (byte) 8);
-            m_pin.update(buffer, (byte) 10, (byte) 8);
+            for (short i = 10; i < 18; i++) {
+                buffer[i] -= 48;
+            }
+            m_soPin.update(buffer, (byte) 9, (byte) 8);
 
             // CREATE RSA KEYS AND PAIR
             m_keyPair = new KeyPair(KeyPair.ALG_RSA, KeyBuilder.LENGTH_RSA_1024);
